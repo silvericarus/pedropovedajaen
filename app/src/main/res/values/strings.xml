@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Parroquia San Pedro Poveda Jaén</string>
+    <string name="title_activity_main">Parroquia San Pedro Poveda Jaén</string>
+    <string name="tab_church">Parroquia</string>
+    <string name="tab_columbarium">Columbario</string>
+    <string name="tab_news">Noticias</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
