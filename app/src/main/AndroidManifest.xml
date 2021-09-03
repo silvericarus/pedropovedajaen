@@ -11,9 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
         <activity
-            android:name=".MainActivity"
+            android:name=".InfoActivity"
             android:exported="true"
+            android:theme="@style/Theme.ParroquiaSanPedroPovedaJaén.NoActionBar"/>
+        <activity
+            android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
+            android:exported="true"
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.ParroquiaSanPedroPovedaJaén.NoActionBar">
             <intent-filter>
