@@ -16,14 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.silvericarus.parroquiasanpedropovedajaen.R;
 import com.silvericarus.parroquiasanpedropovedajaen.adapters.ColumbariumNewsAdapter;
 import com.silvericarus.parroquiasanpedropovedajaen.models.News;
@@ -43,7 +35,6 @@ import java.util.Map;
 public class TabColumbarium extends Fragment {
 
     ColumbariumNewsAdapter mCNAdapter;
-    RequestQueue queue;
     RecyclerView mNewsList;
     public ArrayList<News> newsArrayList = new ArrayList<>();
     AlertDialog.Builder builder;
@@ -68,7 +59,6 @@ public class TabColumbarium extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tab_columbarium, container, false);
-        queue = Volley.newRequestQueue(context);
         mNewsList = (RecyclerView) view.findViewById(R.id.lista_noticias_columbario);
         mNewsList.setLayoutManager(new LinearLayoutManager(context));
         mNewsList.addItemDecoration(new DividerItemDecoration(context,DividerItemDecoration.HORIZONTAL));
@@ -96,12 +86,11 @@ public class TabColumbarium extends Fragment {
         News prueba = new News(0,"Prueba","Si estás viendo esta noticia es que ha habido algún error en la descarga de noticias.", randomImages.getImage(), new ArrayList<>(Arrays.asList( "prueba", "error")),"30/12/1996","www.pedropoveda.es",context);
         newsArrayList.add(prueba);
         mCNAdapter.notifyDataSetChanged();
-        DownloadNews downloadNews = new DownloadNews();
         //downloadNews.execute(newsArrayList);
         // Inflate the layout for this fragment
         return view;
     }
-    public class DownloadNews extends AsyncTask<ArrayList<News>, Void, Void> implements Response.Listener<JSONObject>,Response.ErrorListener{
+    /*public class DownloadNews extends AsyncTask<ArrayList<News>, Void, Void> implements Response.Listener<JSONObject>,Response.ErrorListener{
 
         @Override
         protected Void doInBackground(ArrayList<News>... arrayLists) {
@@ -143,6 +132,5 @@ public class TabColumbarium extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
-    }
+        }*/
 }

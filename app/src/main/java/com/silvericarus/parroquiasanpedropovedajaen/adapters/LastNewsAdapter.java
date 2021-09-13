@@ -105,23 +105,29 @@ public class LastNewsAdapter extends RecyclerView.Adapter<LastNewsAdapter.LastNe
         public void bindNewsItem(News item){
             title.setText(item.getTitle());
             content.setText(item.getContent());
-            if (item.getImg().startsWith("http")){
-                Glide.with(img.getContext()).load(item.getImg()).into(img);
-            }else {
-                Uri imgUri = Uri.parse("file:///android_asset/"+item.getImg());
-                Glide.with(img.getContext()).load(imgUri).into(img);
+            if (item.getImg() != null){
+                if (item.getImg().startsWith("http")){
+                    Glide.with(img.getContext()).load(item.getImg()).into(img);
+                }else {
+                    Uri imgUri = Uri.parse("file:///android_asset/"+item.getImg());
+                    Glide.with(img.getContext()).load(imgUri).into(img);
+                }
             }
+
             fecha.setText(item.getFecha());
             RandomColors randomColors = new RandomColors();
-            for (String categoria : item.getCategorias()) {
-                Chip chip = new Chip(categories.getContext());
-                chip.setText(categoria);
-                chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor(randomColors.getColor())));
-                chip.setCloseIconVisible(false);
-                chip.setTextColor(Color.BLACK);
-                chip.setTextAppearance(R.style.TextAppearance_MaterialComponents_Chip);
-                categories.addView(chip);
+            if (item.getCategorias() != null){
+                for (String categoria : item.getCategorias()) {
+                    Chip chip = new Chip(categories.getContext());
+                    chip.setText(categoria);
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor(randomColors.getColor())));
+                    chip.setCloseIconVisible(false);
+                    chip.setTextColor(Color.BLACK);
+                    chip.setTextAppearance(R.style.TextAppearance_MaterialComponents_Chip);
+                    categories.addView(chip);
+                }
             }
+
         }
     }
 }
