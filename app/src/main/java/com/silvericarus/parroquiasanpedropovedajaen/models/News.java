@@ -4,14 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -27,7 +19,6 @@ public class News {
     ArrayList<String> categorias;
     String fecha;
     String url;
-    RequestQueue queue;
     Context context;
 
     public News(){
@@ -39,9 +30,8 @@ public class News {
         this.title = title;
         this.content = content;
         this.img = img;
-        queue = Volley.newRequestQueue(context);
         if (categorias.isEmpty()){
-            GetCategoriasfromWeb getCategoriasfromWeb = new GetCategoriasfromWeb();
+            //GetCategoriasfromWeb getCategoriasfromWeb = new GetCategoriasfromWeb();
             //this.categorias = getCategoriasfromWeb.execute(id);
         }
         this.categorias = categorias;
@@ -106,7 +96,7 @@ public class News {
         this.url = url;
     }
 
-    public class GetCategoriasfromWeb extends AsyncTask<Integer,Void,ArrayList<String>> implements Response.Listener<JSONObject>,Response.ErrorListener {
+    /*public class GetCategoriasfromWeb extends AsyncTask<Integer,Void,ArrayList<String>> implements Response.Listener<JSONObject>,Response.ErrorListener {
 
         @Override
         protected ArrayList<String> doInBackground(Integer... integers) {
@@ -138,5 +128,5 @@ public class News {
         public void onResponse(JSONObject response) {
             Log.i("Volley",response.toString());
         }
-    }
+    }*/
 }

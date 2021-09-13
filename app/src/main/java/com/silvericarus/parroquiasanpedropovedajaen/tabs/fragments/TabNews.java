@@ -6,12 +6,17 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import android.telephony.mbms.MbmsErrors;
 import android.text.Html;
@@ -20,18 +25,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.silvericarus.parroquiasanpedropovedajaen.R;
 import com.silvericarus.parroquiasanpedropovedajaen.adapters.ImportantNewsAdapter;
 import com.silvericarus.parroquiasanpedropovedajaen.adapters.LastNewsAdapter;
+import com.silvericarus.parroquiasanpedropovedajaen.io.ApiAdapter;
 import com.silvericarus.parroquiasanpedropovedajaen.models.News;
 import com.silvericarus.parroquiasanpedropovedajaen.models.RandomImages;
+import com.silvericarus.parroquiasanpedropovedajaen.tabs.CustomGridLayoutManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,11 +47,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class TabNews extends Fragment {
+public class TabNews extends Fragment implements Callback<JsonElement> {
 
     ImportantNewsAdapter mINAdapter;
     LastNewsAdapter mLNAdapter;
-    RequestQueue queue;
     RecyclerView mImportantNewsList;
     RecyclerView mLastNewsList;
     public ArrayList<News> importantNewsArrayList = new ArrayList<>();
@@ -56,7 +58,12 @@ public class TabNews extends Fragment {
     AlertDialog.Builder builder;
     Context context;
 
-
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Call<JsonElement> call = ApiAdapter.getApiService().getLastNews();
+        call.enqueue(this);
+    }
 
     public TabNews() {
         // Required empty public constructor
@@ -67,6 +74,7 @@ public class TabNews extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getActivity().getApplicationContext();
+
     }
 
     public static TabNews newInstance(){
@@ -78,14 +86,14 @@ public class TabNews extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tab_news, container, false);
-        queue = Volley.newRequestQueue(context);
         mImportantNewsList = (RecyclerView) view.findViewById(R.id.lista_noticia_importante);
         mLastNewsList = (RecyclerView) view.findViewById(R.id.lista_ultimas_noticias);
         mImportantNewsList.setLayoutManager(new LinearLayoutManager(context));
         mImportantNewsList.addItemDecoration(new DividerItemDecoration(context,DividerItemDecoration.HORIZONTAL));
-        mLastNewsList.setLayoutManager(new LinearLayoutManager(context));
+        CustomGridLayoutManager layoutManager = new CustomGridLayoutManager(context);
+        layoutManager.setScrollEnabled(false);
+        mLastNewsList.setLayoutManager(layoutManager);
         mLastNewsList.addItemDecoration(new DividerItemDecoration(context,DividerItemDecoration.HORIZONTAL));
-        builder = new AlertDialog.Builder(context);
         mINAdapter = new ImportantNewsAdapter(importantNewsArrayList);
         mLNAdapter = new LastNewsAdapter(lastNewsArrayList);
         mImportantNewsList.setAdapter(mINAdapter);
@@ -103,7 +111,7 @@ public class TabNews extends Fragment {
         });
         mLNAdapter.setOnClickListener(view1 -> {
             String url;
-            final News newsSelected = mINAdapter.getItemList().get(mImportantNewsList.getChildAdapterPosition(view1));
+            final News newsSelected = mLNAdapter.getItemList().get(mLastNewsList.getChildAdapterPosition(view1));
             if (!newsSelected.getUrl().startsWith("http://") && !newsSelected.getUrl().startsWith("https://"))
                 url = "http://" + newsSelected.getUrl();
             else
@@ -122,5 +130,34 @@ public class TabNews extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+        if (response.isSuccessful()){
+            assert response.body() != null;
+            JsonObject newsPack = response.body().getAsJsonObject();
+            JsonArray news = newsPack.getAsJsonArray("news");
+            mLNAdapter.getItemList().remove(0);
+            mLNAdapter.notifyDataSetChanged();
+            for (int i = 0; i < news.size(); i++) {
+                News news1 = new News();
+                JsonObject row = news.get(i).getAsJsonObject();
+                news1.setId(row.get("ID").getAsInt());
+                news1.setTitle(row.get("post_title").getAsString());
+                news1.setImg(null);
+                news1.setFecha(row.get("post_date").getAsString());
+                news1.setUrl(row.get("guid").getAsString());
+                news1.setCategorias(null);
+                mLNAdapter.addItemToItemList(news1);
+                mLNAdapter.notifyDataSetChanged();
+            }
+        }else{
+                Log.e("Error","Respuesta vacia");
+            }
+        }
+
+    @Override
+    public void onFailure(Call<JsonElement> call, Throwable t) {
+        Log.e("ioError",call.toString());
+    }
 }
 

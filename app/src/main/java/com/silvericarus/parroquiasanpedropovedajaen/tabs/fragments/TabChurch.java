@@ -15,9 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.silvericarus.parroquiasanpedropovedajaen.R;
 
 import java.text.SimpleDateFormat;
@@ -89,7 +86,7 @@ public class TabChurch extends Fragment {
         return viewFull;
     }
 
-    public class DownloadTimetable extends AsyncTask<String, Void, Void> implements Response.Listener<String>,Response.ErrorListener{
+    /*public class DownloadTimetable extends AsyncTask<String, Void, Void> implements Response.Listener<String>,Response.ErrorListener{
 
         @Override
         protected Void doInBackground(String... strings) {
@@ -113,5 +110,5 @@ public class TabChurch extends Fragment {
         public void onResponse(String response) {
 
         }
-    }
+    }*/
 }
