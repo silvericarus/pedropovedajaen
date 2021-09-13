@@ -22,5 +22,6 @@ public interface ApiService {
     Call<JsonElement> getLastNews();
 
 
-
+    @GET("?action=get_categories_by_new")
+    Call<JsonElement> getCategoriesFromNew(@Query("id") Integer id);
 }

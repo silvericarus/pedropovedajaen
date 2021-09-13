@@ -16,7 +16,7 @@ public class News {
     String title;
     String content;
     String img;
-    ArrayList<String> categorias;
+    public ArrayList<String> categorias;
     String fecha;
     String url;
     Context context;
@@ -30,10 +30,6 @@ public class News {
         this.title = title;
         this.content = content;
         this.img = img;
-        if (categorias.isEmpty()){
-            //GetCategoriasfromWeb getCategoriasfromWeb = new GetCategoriasfromWeb();
-            //this.categorias = getCategoriasfromWeb.execute(id);
-        }
         this.categorias = categorias;
         this.fecha = fecha;
         this.url = url;
@@ -95,38 +91,4 @@ public class News {
     public void setUrl(String url) {
         this.url = url;
     }
-
-    /*public class GetCategoriasfromWeb extends AsyncTask<Integer,Void,ArrayList<String>> implements Response.Listener<JSONObject>,Response.ErrorListener {
-
-        @Override
-        protected ArrayList<String> doInBackground(Integer... integers) {
-            final String JSON_URL = "https://pedropoveda.es/app_views/?action=test";
-            JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.POST,JSON_URL,null,this,this){
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    HashMap<String, String> headers = new HashMap<String, String>();
-                    headers.put("Content-Type","application/json");
-                    return headers;
-                }
-            };
-            queue.add(objectRequest);
-            queue.start();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<String> strings) {
-            super.onPostExecute(strings);
-        }
-
-        @Override
-        public void onErrorResponse(VolleyError error) {
-
-        }
-
-        @Override
-        public void onResponse(JSONObject response) {
-            Log.i("Volley",response.toString());
-        }
-    }*/
 }
