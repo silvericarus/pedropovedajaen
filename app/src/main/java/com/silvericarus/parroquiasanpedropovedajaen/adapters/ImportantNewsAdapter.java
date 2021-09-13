@@ -1,7 +1,6 @@
 package com.silvericarus.parroquiasanpedropovedajaen.adapters;
 
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -53,9 +52,7 @@ public class ImportantNewsAdapter extends RecyclerView.Adapter<ImportantNewsAdap
 
         view.setOnClickListener(mListener);
 
-        ImportantNewsViewHolder viewHolder = new ImportantNewsViewHolder(view);
-
-        return viewHolder;
+        return new ImportantNewsViewHolder(view);
     }
 
     @Override
@@ -80,22 +77,22 @@ public class ImportantNewsAdapter extends RecyclerView.Adapter<ImportantNewsAdap
     }
 
 
-    public class ImportantNewsViewHolder extends RecyclerView.ViewHolder{
+    public static class ImportantNewsViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView title;
-        private TextView content;
-        private ImageView img;
-        private TextView fecha;
-        private ChipGroup categories;
+        private final TextView title;
+        private final TextView content;
+        private final ImageView img;
+        private final TextView fecha;
+        private final ChipGroup categories;
 
         public ImportantNewsViewHolder(View itemView) {
             super(itemView);
 
-            title = (TextView) itemView.findViewById(R.id.title);
-            content = (TextView) itemView.findViewById(R.id.content);
-            img = (ImageView) itemView.findViewById(R.id.img);
-            fecha = (TextView) itemView.findViewById(R.id.fecha);
-            categories = (ChipGroup) itemView.findViewById(R.id.category_group);
+            title = itemView.findViewById(R.id.title);
+            content = itemView.findViewById(R.id.content);
+            img = itemView.findViewById(R.id.img);
+            fecha = itemView.findViewById(R.id.fecha);
+            categories = itemView.findViewById(R.id.category_group);
 
         }
 
@@ -110,7 +107,7 @@ public class ImportantNewsAdapter extends RecyclerView.Adapter<ImportantNewsAdap
                 Uri imgUri = Uri.parse("file:///android_asset/"+item.getImg());
                 Glide.with(img.getContext()).load(imgUri).into(img);
             }
-            fecha.setText(item.getFecha().toString());
+            fecha.setText(item.getFecha());
             RandomColors randomColors = new RandomColors();
             for (String categoria : item.getCategorias()) {
                 Chip chip = new Chip(categories.getContext());

@@ -18,8 +18,6 @@ import com.silvericarus.parroquiasanpedropovedajaen.R;
 import com.silvericarus.parroquiasanpedropovedajaen.models.News;
 import com.silvericarus.parroquiasanpedropovedajaen.models.RandomColors;
 import com.silvericarus.parroquiasanpedropovedajaen.models.RandomImages;
-
-import java.io.File;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
@@ -56,9 +54,7 @@ public class LastNewsAdapter extends RecyclerView.Adapter<LastNewsAdapter.LastNe
 
         view.setOnClickListener(mListener);
 
-        LastNewsViewHolder viewHolder = new LastNewsViewHolder(view);
-
-        return viewHolder;
+        return new LastNewsViewHolder(view);
     }
 
     @Override
@@ -83,22 +79,22 @@ public class LastNewsAdapter extends RecyclerView.Adapter<LastNewsAdapter.LastNe
     }
 
 
-    public class LastNewsViewHolder extends RecyclerView.ViewHolder{
+    public static class LastNewsViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView title;
-        private TextView content;
-        private ImageView img;
-        private TextView fecha;
-        private ChipGroup categories;
+        private final TextView title;
+        private final TextView content;
+        private final ImageView img;
+        private final TextView fecha;
+        private final ChipGroup categories;
 
         public LastNewsViewHolder(View itemView) {
             super(itemView);
 
-            title = (TextView) itemView.findViewById(R.id.title);
-            content = (TextView) itemView.findViewById(R.id.content);
-            img = (ImageView) itemView.findViewById(R.id.img);
-            fecha = (TextView) itemView.findViewById(R.id.fecha);
-            categories = (ChipGroup) itemView.findViewById(R.id.category_group);
+            title = itemView.findViewById(R.id.title);
+            content = itemView.findViewById(R.id.content);
+            img = itemView.findViewById(R.id.img);
+            fecha = itemView.findViewById(R.id.fecha);
+            categories = itemView.findViewById(R.id.category_group);
 
         }
 

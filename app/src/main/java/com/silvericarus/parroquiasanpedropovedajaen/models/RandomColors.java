@@ -5,7 +5,8 @@ import java.util.Collections;
 import java.util.Stack;
 
 public class RandomColors {
-    private Stack<String> recycle, colors;
+    private final Stack<String> recycle;
+    private final Stack<String> colors;
 
     public RandomColors() {
         colors = new Stack<>();

@@ -5,7 +5,8 @@ import java.util.Collections;
 import java.util.Stack;
 
 public class RandomImages {
-    private Stack<String> recycle, images;
+    private final Stack<String> recycle;
+    private final Stack<String> images;
 
     public RandomImages() {
         images = new Stack<>();

@@ -1,15 +1,7 @@
 package com.silvericarus.parroquiasanpedropovedajaen.models;
 
 import android.content.Context;
-import android.os.AsyncTask;
-import android.util.Log;
-
-import org.json.JSONObject;
-
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class News {
     int id;
