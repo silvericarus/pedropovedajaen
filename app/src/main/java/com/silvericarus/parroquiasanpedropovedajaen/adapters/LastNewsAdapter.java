@@ -2,6 +2,7 @@ package com.silvericarus.parroquiasanpedropovedajaen.adapters;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.silvericarus.parroquiasanpedropovedajaen.R;
 import com.silvericarus.parroquiasanpedropovedajaen.models.News;
 import com.silvericarus.parroquiasanpedropovedajaen.models.RandomColors;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
@@ -103,8 +105,13 @@ public class LastNewsAdapter extends RecyclerView.Adapter<LastNewsAdapter.LastNe
         public void bindNewsItem(News item){
             title.setText(item.getTitle());
             content.setText(item.getContent());
-            Glide.with(img.getContext()).load(item.getImg()).into(img);
-            fecha.setText(item.getFecha().toString());
+            if (item.getImg().startsWith("http")){
+                Glide.with(img.getContext()).load(item.getImg()).into(img);
+            }else {
+                Uri imgUri = Uri.parse("file:///android_asset/"+item.getImg());
+                Glide.with(img.getContext()).load(imgUri).into(img);
+            }
+            fecha.setText(item.getFecha());
             RandomColors randomColors = new RandomColors();
             for (String categoria : item.getCategorias()) {
                 Chip chip = new Chip(categories.getContext());

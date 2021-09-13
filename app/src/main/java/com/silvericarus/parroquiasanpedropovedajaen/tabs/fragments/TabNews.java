@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.telephony.mbms.MbmsErrors;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +31,7 @@ import com.silvericarus.parroquiasanpedropovedajaen.R;
 import com.silvericarus.parroquiasanpedropovedajaen.adapters.ImportantNewsAdapter;
 import com.silvericarus.parroquiasanpedropovedajaen.adapters.LastNewsAdapter;
 import com.silvericarus.parroquiasanpedropovedajaen.models.News;
+import com.silvericarus.parroquiasanpedropovedajaen.models.RandomImages;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class TabNews extends Fragment {
@@ -108,59 +112,15 @@ public class TabNews extends Fragment {
             startActivity(browserIntent);
 
         });
-        News prueba = new News(0,"Prueba","Si estás viendo esta noticia es que ha habido algún error en la descarga de noticias.","https://serv3.raiolanetworks.es/blog/wp-content/uploads/error-500-768x499.png", new ArrayList<>(Arrays.asList( "prueba", "error")),new Date(1996,12,30),null,"www.pedropoveda.es");
+        RandomImages randomImages = new RandomImages();
+        News prueba = new News(0,"Prueba","Si estás viendo esta noticia es que ha habido algún error en la descarga de noticias.", randomImages.getImage(), new ArrayList<>(Arrays.asList( "prueba", "error")),"30/12/1996","www.pedropoveda.es",context);
         importantNewsArrayList.add(prueba);
         lastNewsArrayList.add(prueba);
         mINAdapter.notifyDataSetChanged();
         mLNAdapter.notifyDataSetChanged();
-        DownloadNews downloadNews = new DownloadNews();
-        downloadNews.execute(importantNewsArrayList,lastNewsArrayList);
         // Inflate the layout for this fragment
         return view;
     }
-    public class DownloadNews extends AsyncTask<ArrayList<News>, Void, Void> implements Response.Listener<JSONObject>,Response.ErrorListener{
 
-        @Override
-        protected Void doInBackground(ArrayList<News>... arrayLists) {
-            final String JSON_URL = "";
-            JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET,JSON_URL,null,this,this){
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    HashMap<String, String> headers = new HashMap<String, String>();
-                    headers.put("Content-Type","application/json");
-                    return headers;
-                }
-            };
-
-            queue.add(objectRequest);
-            queue.start();
-            return null;
-        }
-
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            Log.e("Volley","Respuesta Errónea "+error.toString());
-        }
-
-        @Override
-        public void onResponse(JSONObject response) {
-            try {
-                JSONArray news = response.getJSONArray("news");
-                for (int i = 0; i < news.length(); i++) {
-                    News news1 = new News();
-                    JSONObject row = news.getJSONObject(i);
-                    news1.setId(row.getInt("id"));
-                    news1.setTitle(row.getString("author"));
-                    news1.setContent(row.getString("body"));
-                    news1.setImg(row.getString("img"));
-                    mINAdapter.addItemToItemList(news1);
-                    mINAdapter.notifyDataSetChanged();
-
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }
 
