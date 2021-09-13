@@ -27,6 +27,7 @@ import com.android.volley.toolbox.Volley;
 import com.silvericarus.parroquiasanpedropovedajaen.R;
 import com.silvericarus.parroquiasanpedropovedajaen.adapters.ColumbariumNewsAdapter;
 import com.silvericarus.parroquiasanpedropovedajaen.models.News;
+import com.silvericarus.parroquiasanpedropovedajaen.models.RandomImages;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -91,11 +92,12 @@ public class TabColumbarium extends Fragment {
                 dialog.show();
             }
         });
-        News prueba = new News(0,"Prueba","Si estás viendo esta noticia es que ha habido algún error en la descarga de noticias.","https://serv3.raiolanetworks.es/blog/wp-content/uploads/error-500-768x499.png", new ArrayList<>(Arrays.asList( "prueba", "error")),new Date(1996,12,30),null,"www.pedropoveda.es");
+        RandomImages randomImages = new RandomImages();
+        News prueba = new News(0,"Prueba","Si estás viendo esta noticia es que ha habido algún error en la descarga de noticias.", randomImages.getImage(), new ArrayList<>(Arrays.asList( "prueba", "error")),"30/12/1996","www.pedropoveda.es",context);
         newsArrayList.add(prueba);
         mCNAdapter.notifyDataSetChanged();
         DownloadNews downloadNews = new DownloadNews();
-        downloadNews.execute(newsArrayList);
+        //downloadNews.execute(newsArrayList);
         // Inflate the layout for this fragment
         return view;
     }

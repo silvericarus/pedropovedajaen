@@ -2,6 +2,7 @@ package com.silvericarus.parroquiasanpedropovedajaen.adapters;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,8 +104,13 @@ public class ColumbariumNewsAdapter extends RecyclerView.Adapter<ColumbariumNews
         public void bindNewsItem(News item){
             title.setText(item.getTitle());
             content.setText(item.getContent());
-            fecha.setText(item.getFecha().toString());
-            Glide.with(img.getContext()).load(item.getImg()).into(img);
+            if (item.getImg().startsWith("http")){
+                Glide.with(img.getContext()).load(item.getImg()).into(img);
+            }else {
+                Uri imgUri = Uri.parse("file:///android_asset/"+item.getImg());
+                Glide.with(img.getContext()).load(imgUri).into(img);
+            }
+            fecha.setText(item.getFecha());
             RandomColors randomColors = new RandomColors();
             for (String categoria : item.getCategorias()) {
                 Chip chip = new Chip(categories.getContext());
