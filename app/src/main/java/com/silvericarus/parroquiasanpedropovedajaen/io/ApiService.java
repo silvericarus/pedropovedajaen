@@ -24,4 +24,7 @@ public interface ApiService {
 
     @GET("?action=get_categories_by_new")
     Call<JsonElement> getCategoriesFromNew(@Query("id") Integer id);
+
+    @GET("?action=get_image_by_new")
+    Call<JsonElement> getImageFromNews(@Query("id") Integer id);
 }

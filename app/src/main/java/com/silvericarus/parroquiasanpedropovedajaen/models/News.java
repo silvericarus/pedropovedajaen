@@ -6,8 +6,8 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +26,7 @@ public class News {
     }
 
     public News(int id, String title, String content, String img, ArrayList<String> categorias, String fecha, String url, Context context) {
+
         this.id = id;
         this.title = title;
         this.content = content;

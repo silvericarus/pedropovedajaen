@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
@@ -39,9 +41,16 @@ import com.silvericarus.parroquiasanpedropovedajaen.tabs.CustomGridLayoutManager
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -55,9 +64,9 @@ public class TabNews extends Fragment implements Callback<JsonElement> {
     RecyclerView mLastNewsList;
     public ArrayList<News> importantNewsArrayList = new ArrayList<>();
     public ArrayList<News> lastNewsArrayList = new ArrayList<>();
-    AlertDialog.Builder builder;
     Context context;
     Call<JsonElement> callCategories;
+    Call<JsonElement> callImage;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -83,6 +92,7 @@ public class TabNews extends Fragment implements Callback<JsonElement> {
         return fragment;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -145,25 +155,39 @@ public class TabNews extends Fragment implements Callback<JsonElement> {
                     JsonObject row = news.get(i).getAsJsonObject();
                     news1.setId(row.get("ID").getAsInt());
                     news1.setTitle(row.get("post_title").getAsString());
-                    news1.setImg(null);
-                    news1.setFecha(row.get("post_date").getAsString());
+                    news1.setContent(Jsoup.parse(row.get("post_content").getAsString()).text());
+                    String dateAsString = row.get("post_date").getAsString();
+                    dateAsString = dateAsString.replace("-","/");
+                    dateAsString = dateAsString.replace(dateAsString.substring(dateAsString.indexOf(" ")),"");
+                    news1.setFecha(dateAsString);
                     news1.setUrl(row.get("guid").getAsString());
                     callCategories = ApiAdapter.getApiService().getCategoriesFromNew(news1.getId());
+                    callImage = ApiAdapter.getApiService().getImageFromNews(news1.getId());
                     callCategories.enqueue(this);
+                    callImage.enqueue(this);
                     mLNAdapter.addItemToItemList(news1);
                     mLNAdapter.notifyDataSetChanged();
                 }
-            }else{
+            }else if(pack.has("categories")){
                 int id = pack.get("id").getAsInt();
                     for (News news:mLNAdapter.getItemList()) {
-
                         if(id==news.getId() && pack.get("categories").toString().length()>=10){
                             ArrayList<String> newsCategories = new ArrayList<>();
                             newsCategories.add(pack.get("categories").getAsString());
                             news.setCategorias(newsCategories);
+                            break;
                         }
                     }
-                }
+                }else {
+                    int id = pack.get("id").getAsInt();
+                    for (News news:mLNAdapter.getItemList()) {
+                        if(id==news.getId()){
+                            news.setImg(pack.get("image").getAsString());
+                            break;
+                        }
+
+                    }
+            }
                 mLNAdapter.notifyDataSetChanged();
             }else {
             Log.e("Error", "Respuesta vacia");

@@ -3,6 +3,7 @@ package com.silvericarus.parroquiasanpedropovedajaen.tabs.fragments;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -25,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -83,7 +85,7 @@ public class TabColumbarium extends Fragment {
             }
         });
         RandomImages randomImages = new RandomImages();
-        News prueba = new News(0,"Prueba","Si estás viendo esta noticia es que ha habido algún error en la descarga de noticias.", randomImages.getImage(), new ArrayList<>(Arrays.asList( "prueba", "error")),"30/12/1996","www.pedropoveda.es",context);
+        News prueba = new News(0,"Prueba","Si estás viendo esta noticia es que ha habido algún error en la descarga de noticias.", randomImages.getImage(), new ArrayList<>(Arrays.asList( "prueba", "error")), "30/12/1996","www.pedropoveda.es",context);
         newsArrayList.add(prueba);
         mCNAdapter.notifyDataSetChanged();
         //downloadNews.execute(newsArrayList);

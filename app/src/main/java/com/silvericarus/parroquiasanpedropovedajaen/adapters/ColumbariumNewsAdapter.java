@@ -110,7 +110,7 @@ public class ColumbariumNewsAdapter extends RecyclerView.Adapter<ColumbariumNews
                 Uri imgUri = Uri.parse("file:///android_asset/"+item.getImg());
                 Glide.with(img.getContext()).load(imgUri).into(img);
             }
-            fecha.setText(item.getFecha());
+            fecha.setText(item.getFecha().toString());
             RandomColors randomColors = new RandomColors();
             for (String categoria : item.getCategorias()) {
                 Chip chip = new Chip(categories.getContext());
