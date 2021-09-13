@@ -57,6 +57,7 @@ public class TabNews extends Fragment implements Callback<JsonElement> {
     public ArrayList<News> lastNewsArrayList = new ArrayList<>();
     AlertDialog.Builder builder;
     Context context;
+    Call<JsonElement> callCategories;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -134,26 +135,41 @@ public class TabNews extends Fragment implements Callback<JsonElement> {
     public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
         if (response.isSuccessful()){
             assert response.body() != null;
-            JsonObject newsPack = response.body().getAsJsonObject();
-            JsonArray news = newsPack.getAsJsonArray("news");
-            mLNAdapter.getItemList().remove(0);
-            mLNAdapter.notifyDataSetChanged();
-            for (int i = 0; i < news.size(); i++) {
-                News news1 = new News();
-                JsonObject row = news.get(i).getAsJsonObject();
-                news1.setId(row.get("ID").getAsInt());
-                news1.setTitle(row.get("post_title").getAsString());
-                news1.setImg(null);
-                news1.setFecha(row.get("post_date").getAsString());
-                news1.setUrl(row.get("guid").getAsString());
-                news1.setCategorias(null);
-                mLNAdapter.addItemToItemList(news1);
+            JsonObject pack = response.body().getAsJsonObject();
+            if (pack.has("news")){
+                JsonArray news = pack.getAsJsonArray("news");
+                mLNAdapter.getItemList().remove(0);
                 mLNAdapter.notifyDataSetChanged();
-            }
-        }else{
-                Log.e("Error","Respuesta vacia");
-            }
+                for (int i = 0; i < news.size(); i++) {
+                    News news1 = new News();
+                    JsonObject row = news.get(i).getAsJsonObject();
+                    news1.setId(row.get("ID").getAsInt());
+                    news1.setTitle(row.get("post_title").getAsString());
+                    news1.setImg(null);
+                    news1.setFecha(row.get("post_date").getAsString());
+                    news1.setUrl(row.get("guid").getAsString());
+                    callCategories = ApiAdapter.getApiService().getCategoriesFromNew(news1.getId());
+                    callCategories.enqueue(this);
+                    mLNAdapter.addItemToItemList(news1);
+                    mLNAdapter.notifyDataSetChanged();
+                }
+            }else{
+                int id = pack.get("id").getAsInt();
+                    for (News news:mLNAdapter.getItemList()) {
+
+                        if(id==news.getId() && pack.get("categories").toString().length()>=10){
+                            ArrayList<String> newsCategories = new ArrayList<>();
+                            newsCategories.add(pack.get("categories").getAsString());
+                            news.setCategorias(newsCategories);
+                        }
+                    }
+                }
+                mLNAdapter.notifyDataSetChanged();
+            }else {
+            Log.e("Error", "Respuesta vacia");
         }
+    }
+
 
     @Override
     public void onFailure(Call<JsonElement> call, Throwable t) {
