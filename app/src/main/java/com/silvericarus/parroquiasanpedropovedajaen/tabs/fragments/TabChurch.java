@@ -3,23 +3,14 @@ package com.silvericarus.parroquiasanpedropovedajaen.tabs.fragments;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
-
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import com.silvericarus.parroquiasanpedropovedajaen.R;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 
 public class TabChurch extends Fragment {
     Context context;
@@ -36,8 +27,7 @@ public class TabChurch extends Fragment {
     }
 
     public static TabChurch newInstance(){
-        TabChurch fragment = new TabChurch();
-        return fragment;
+        return new TabChurch();
     }
 
     @Override
@@ -54,7 +44,7 @@ public class TabChurch extends Fragment {
         });
 
         btnFacebook.setOnClickListener(view -> {
-            Intent intent=null;
+            Intent intent;
             String url = "fb://page/150237331246";
             try {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW);
@@ -69,7 +59,7 @@ public class TabChurch extends Fragment {
         });
 
         btnYoutube.setOnClickListener(view -> {
-            Intent intent=null;
+            Intent intent;
             String url = "https://www.youtube.com/c/ParroquiadeSanPedroPovedadeJa%C3%A9n/featured";
             try {
                 intent =new Intent(Intent.ACTION_VIEW);

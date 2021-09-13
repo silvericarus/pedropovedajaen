@@ -1,18 +1,13 @@
 package com.silvericarus.parroquiasanpedropovedajaen.tabs.fragments;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,17 +15,8 @@ import com.silvericarus.parroquiasanpedropovedajaen.R;
 import com.silvericarus.parroquiasanpedropovedajaen.adapters.ColumbariumNewsAdapter;
 import com.silvericarus.parroquiasanpedropovedajaen.models.News;
 import com.silvericarus.parroquiasanpedropovedajaen.models.RandomImages;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TabColumbarium extends Fragment {
 
@@ -51,39 +37,30 @@ public class TabColumbarium extends Fragment {
     }
 
     public static TabColumbarium newInstance(){
-        TabColumbarium fragment = new TabColumbarium();
-        return fragment;
+        return new TabColumbarium();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tab_columbarium, container, false);
-        mNewsList = (RecyclerView) view.findViewById(R.id.lista_noticias_columbario);
+        mNewsList = view.findViewById(R.id.lista_noticias_columbario);
         mNewsList.setLayoutManager(new LinearLayoutManager(context));
         mNewsList.addItemDecoration(new DividerItemDecoration(context,DividerItemDecoration.HORIZONTAL));
         builder = new AlertDialog.Builder(context);
         mCNAdapter = new ColumbariumNewsAdapter(newsArrayList);
         mNewsList.setAdapter(mCNAdapter);
-        mCNAdapter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final News newsSelected = mCNAdapter.getItemList().get(mNewsList.getChildAdapterPosition(view));
+        mCNAdapter.setOnClickListener(view1 -> {
+            final News newsSelected = mCNAdapter.getItemList().get(mNewsList.getChildAdapterPosition(view1));
 
-                builder.setTitle(newsSelected.getTitle())
-                        .setMessage(HtmlCompat.fromHtml(newsSelected.getContent(), HtmlCompat.FROM_HTML_SEPARATOR_LINE_BREAK_PARAGRAPH))
-                        .setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            }
+            builder.setTitle(newsSelected.getTitle())
+                    .setMessage(HtmlCompat.fromHtml(newsSelected.getContent(), HtmlCompat.FROM_HTML_SEPARATOR_LINE_BREAK_PARAGRAPH))
+                    .setPositiveButton("Cerrar", (dialogInterface, i) -> dialogInterface.dismiss());
+            AlertDialog dialog = builder.create();
+            dialog.show();
         });
         RandomImages randomImages = new RandomImages();
-        News prueba = new News(0,"Prueba","Si estás viendo esta noticia es que ha habido algún error en la descarga de noticias.", randomImages.getImage(), new ArrayList<>(Arrays.asList( "prueba", "error")),"30/12/1996","www.pedropoveda.es",context);
+        News prueba = new News(0,"Prueba","Si estás viendo esta noticia es que ha habido algún error en la descarga de noticias.", randomImages.getImage(), new ArrayList<>(Arrays.asList( "prueba", "error")), "30/12/1996","www.pedropoveda.es",context);
         newsArrayList.add(prueba);
         mCNAdapter.notifyDataSetChanged();
         //downloadNews.execute(newsArrayList);

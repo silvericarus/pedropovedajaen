@@ -96,9 +96,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupTabLayout() {
         tabLayout = findViewById(R.id.tabs);
         new TabLayoutMediator(tabLayout, viewPager,
-                (tab, position) -> {
-                    tab.setText(ViewPagerAdapter.Tab.byPosition(position).title);
-                })
+                (tab, position) -> tab.setText(ViewPagerAdapter.Tab.byPosition(position).title))
                 .attach();
 
         tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.blue_dark));
