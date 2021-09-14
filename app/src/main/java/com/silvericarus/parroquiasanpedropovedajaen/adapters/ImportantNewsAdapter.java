@@ -3,6 +3,7 @@ package com.silvericarus.parroquiasanpedropovedajaen.adapters;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.google.android.material.chip.ChipGroup;
 import com.silvericarus.parroquiasanpedropovedajaen.R;
 import com.silvericarus.parroquiasanpedropovedajaen.models.News;
 import com.silvericarus.parroquiasanpedropovedajaen.models.RandomColors;
+import com.silvericarus.parroquiasanpedropovedajaen.models.RandomImages;
 
 import java.util.ArrayList;
 
@@ -98,26 +100,37 @@ public class ImportantNewsAdapter extends RecyclerView.Adapter<ImportantNewsAdap
 
 
 
-        public void bindNewsItem(News item){
+        public void bindNewsItem(News item) {
             title.setText(item.getTitle());
+            Log.i("new",item.getContent());
             content.setText(item.getContent());
-            if (item.getImg().startsWith("http")){
-                Glide.with(img.getContext()).load(item.getImg()).into(img);
-            }else {
-                Uri imgUri = Uri.parse("file:///android_asset/"+item.getImg());
-                Glide.with(img.getContext()).load(imgUri).into(img);
+            if (item.getImg() != null){
+                if (item.getImg().equals("none") || !item.getImg().startsWith("https")) {
+                    RandomImages randomImages = new RandomImages();
+                    item.setImg(randomImages.getImage());
+                    Log.i("img1",item.getImg());
+                    Uri imgUri = Uri.parse("file:///android_asset/" + item.getImg());
+                    Glide.with(img.getContext()).load(imgUri).into(img);
+                } else {
+                    Glide.with(img.getContext()).load(item.getImg()).into(img);
+                }
             }
             fecha.setText(item.getFecha());
             RandomColors randomColors = new RandomColors();
-            for (String categoria : item.getCategorias()) {
-                Chip chip = new Chip(categories.getContext());
-                chip.setText(categoria);
-                chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor(randomColors.getColor())));
-                chip.setCloseIconVisible(false);
-                chip.setTextColor(Color.BLACK);
-                chip.setTextAppearance(R.style.TextAppearance_MaterialComponents_Chip);
-                categories.addView(chip);
+            if (item.getCategorias() != null){
+                Log.i("pack1",item.getCategorias().toString());
+                categories.removeAllViews();
+                for (String categoria : item.getCategorias()) {
+                    Chip chip = new Chip(categories.getContext());
+                    chip.setText(categoria);
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor(randomColors.getColor())));
+                    chip.setCloseIconVisible(false);
+                    chip.setTextColor(Color.BLACK);
+                    chip.setTextAppearance(R.style.TextAppearance_MaterialComponents_Chip);
+                    categories.addView(chip);
+                }
             }
+
         }
     }
 }
