@@ -118,6 +118,7 @@ public class LastNewsAdapter extends RecyclerView.Adapter<LastNewsAdapter.LastNe
             fecha.setText(item.getFecha());
             RandomColors randomColors = new RandomColors();
             if (item.getCategorias() != null){
+                categories.removeAllViews();
                 for (String categoria : item.getCategorias()) {
                     Chip chip = new Chip(categories.getContext());
                     chip.setText(categoria);

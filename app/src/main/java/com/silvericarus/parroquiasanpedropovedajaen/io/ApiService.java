@@ -18,4 +18,10 @@ public interface ApiService {
 
     @GET("?action=get_image_by_new")
     Call<JsonElement> getImageFromNews(@Query("id") Integer id);
+
+    @GET("?action=get_columbario")
+    Call<JsonElement> getColumbariumNews();
+
+    @GET("?action=get_destacado")
+    Call<JsonElement> getImportantNews();
 }

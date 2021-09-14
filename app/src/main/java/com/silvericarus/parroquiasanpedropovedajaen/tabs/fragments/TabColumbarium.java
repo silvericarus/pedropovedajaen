@@ -1,30 +1,57 @@
 package com.silvericarus.parroquiasanpedropovedajaen.tabs.fragments;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.silvericarus.parroquiasanpedropovedajaen.R;
 import com.silvericarus.parroquiasanpedropovedajaen.adapters.ColumbariumNewsAdapter;
+import com.silvericarus.parroquiasanpedropovedajaen.io.ApiAdapter;
 import com.silvericarus.parroquiasanpedropovedajaen.models.News;
 import com.silvericarus.parroquiasanpedropovedajaen.models.RandomImages;
+import com.silvericarus.parroquiasanpedropovedajaen.tabs.CustomGridLayoutManager;
+
+import org.jsoup.Jsoup;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class TabColumbarium extends Fragment {
+public class TabColumbarium extends Fragment implements Callback<JsonElement> {
 
     ColumbariumNewsAdapter mCNAdapter;
     RecyclerView mNewsList;
     public ArrayList<News> newsArrayList = new ArrayList<>();
-    AlertDialog.Builder builder;
     Context context;
+    Call<JsonElement> callImage;
+    Call<JsonElement> callCategories;
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Call<JsonElement> call = ApiAdapter.getApiService().getColumbariumNews();
+        call.enqueue(this);
+    }
 
     public TabColumbarium() {
         // Required empty public constructor
@@ -45,69 +72,95 @@ public class TabColumbarium extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tab_columbarium, container, false);
         mNewsList = view.findViewById(R.id.lista_noticias_columbario);
-        mNewsList.setLayoutManager(new LinearLayoutManager(context));
+        CustomGridLayoutManager layoutManager = new CustomGridLayoutManager(context);
+        layoutManager.setScrollEnabled(true);
+        mNewsList.setLayoutManager(layoutManager);
         mNewsList.addItemDecoration(new DividerItemDecoration(context,DividerItemDecoration.HORIZONTAL));
-        builder = new AlertDialog.Builder(context);
         mCNAdapter = new ColumbariumNewsAdapter(newsArrayList);
         mNewsList.setAdapter(mCNAdapter);
         mCNAdapter.setOnClickListener(view1 -> {
+            String url;
             final News newsSelected = mCNAdapter.getItemList().get(mNewsList.getChildAdapterPosition(view1));
-
-            builder.setTitle(newsSelected.getTitle())
-                    .setMessage(HtmlCompat.fromHtml(newsSelected.getContent(), HtmlCompat.FROM_HTML_SEPARATOR_LINE_BREAK_PARAGRAPH))
-                    .setPositiveButton("Cerrar", (dialogInterface, i) -> dialogInterface.dismiss());
-            AlertDialog dialog = builder.create();
-            dialog.show();
+            if (!newsSelected.getUrl().startsWith("http://") && !newsSelected.getUrl().startsWith("https://"))
+                url = "http://" + newsSelected.getUrl();
+            else
+                url = newsSelected.getUrl();
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(browserIntent);
         });
         RandomImages randomImages = new RandomImages();
         News prueba = new News(0,"Prueba","Si estás viendo esta noticia es que ha habido algún error en la descarga de noticias.", randomImages.getImage(), new ArrayList<>(Arrays.asList( "prueba", "error")), "30/12/1996","www.pedropoveda.es",context);
         newsArrayList.add(prueba);
         mCNAdapter.notifyDataSetChanged();
-        //downloadNews.execute(newsArrayList);
         // Inflate the layout for this fragment
         return view;
     }
-    /*public class DownloadNews extends AsyncTask<ArrayList<News>, Void, Void> implements Response.Listener<JSONObject>,Response.ErrorListener{
 
-        @Override
-        protected Void doInBackground(ArrayList<News>... arrayLists) {
-            final String JSON_URL = "";
-            JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET,JSON_URL,null,this,this){
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    HashMap<String, String> headers = new HashMap<String, String>();
-                    headers.put("Content-Type","application/json");
-                    return headers;
-                }
-            };
-
-            queue.add(objectRequest);
-            queue.start();
-            return null;
-        }
-
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            Log.e("Volley","Respuesta Errónea "+error.toString());
-        }
-
-        @Override
-        public void onResponse(JSONObject response) {
-            try {
-                JSONArray news = response.getJSONArray("news");
-                for (int i = 0; i < news.length(); i++) {
+    @Override
+    public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+        if (response.isSuccessful()){
+            assert response.body() != null;
+            JsonObject pack = response.body().getAsJsonObject();
+            if (pack.has("news")) {
+                JsonArray news = pack.getAsJsonArray("news");
+                mCNAdapter.getItemList().remove(0);
+                mCNAdapter.notifyDataSetChanged();
+                for (int i = 0; i < news.size(); i++) {
                     News news1 = new News();
-                    JSONObject row = news.getJSONObject(i);
-                    news1.setId(row.getInt("id"));
-                    news1.setTitle(row.getString("author"));
-                    news1.setContent(row.getString("body"));
-                    news1.setImg(row.getString("img"));
+                    JsonObject row = news.get(i).getAsJsonObject();
+                    news1.setId(row.get("ID").getAsInt());
+                    news1.setTitle(row.get("post_title").getAsString());
+                    news1.setContent(Jsoup.parse(row.get("post_content").getAsString()).text());
+                    String dateAsString = row.get("post_date").getAsString();
+                    dateAsString = dateAsString.replace("-", "/");
+                    dateAsString = dateAsString.replace(dateAsString.substring(dateAsString.indexOf(" ")), "");
+                    news1.setFecha(dateAsString);
+                    news1.setUrl(row.get("guid").getAsString());
                     mCNAdapter.addItemToItemList(news1);
                     mCNAdapter.notifyDataSetChanged();
+                    callImage = ApiAdapter.getApiService().getImageFromNews(news1.getId());
+                    callImage.enqueue(this);
+                    callCategories = ApiAdapter.getApiService().getCategoriesFromNew(news1.getId());
+                    callCategories.enqueue(this);
+                }
+            }else if (pack.has("categories")){
+                int id = pack.get("id").getAsInt();
+                for (News news:mCNAdapter.getItemList()) {
+                    if(id==news.getId() && pack.get("categories").toString().length()>=10) {
+                        if (!pack.get("categories").isJsonArray()){
+                            ArrayList<String> newsCategories = new ArrayList<>();
+                            newsCategories.add(pack.get("categories").getAsString());
+                            news.setCategorias(newsCategories);
+                        }else {
+                            Log.i("categories",pack.get("categories").toString());
+                            ArrayList<String> newsCategories = new ArrayList<>();
+                            JsonArray categories = pack.get("categories").getAsJsonArray();
+                            for (int i = 0;i<categories.size();i++){
+                                newsCategories.add(categories.get(i).getAsString());
+                            }
+                            news.setCategorias(newsCategories);
+                        }
+                        break;
+                    }
+                }
+            }else{
+                int id = pack.get("id").getAsInt();
+                for (News news:mCNAdapter.getItemList()) {
+                    if(id==news.getId()){
+                        news.setImg(pack.get("image").getAsString());
+                        break;
+                    }
 
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
-        }*/
+            mCNAdapter.notifyDataSetChanged();
+        }else {
+            Log.e("Error", "Respuesta vacia");
+        }
+    }
+
+    @Override
+    public void onFailure(Call<JsonElement> call, Throwable t) {
+        Log.e("ioError",call.toString());
+    }
 }
