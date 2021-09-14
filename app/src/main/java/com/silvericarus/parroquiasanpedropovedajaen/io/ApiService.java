@@ -24,4 +24,7 @@ public interface ApiService {
 
     @GET("?action=get_destacado")
     Call<JsonElement> getImportantNews();
+
+    @GET("?action=get_calendar")
+    Call<JsonElement> getHorario();
 }

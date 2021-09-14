@@ -32,7 +32,11 @@ import com.silvericarus.parroquiasanpedropovedajaen.models.News;
 import com.silvericarus.parroquiasanpedropovedajaen.models.RandomImages;
 import com.silvericarus.parroquiasanpedropovedajaen.tabs.CustomGridLayoutManager;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Entities;
+import org.jsoup.safety.Whitelist;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -110,7 +114,11 @@ public class TabColumbarium extends Fragment implements Callback<JsonElement> {
                     JsonObject row = news.get(i).getAsJsonObject();
                     news1.setId(row.get("ID").getAsInt());
                     news1.setTitle(row.get("post_title").getAsString());
-                    news1.setContent(Jsoup.parse(row.get("post_content").getAsString()).text());
+                    Document.OutputSettings outputSettings = new Document.OutputSettings();
+                    outputSettings.prettyPrint(false);
+                    outputSettings.escapeMode(Entities.EscapeMode.extended);
+                    String html = Jsoup.clean(row.get("post_content").getAsString(),"", Whitelist.none(),outputSettings);
+                    news1.setContent(StringEscapeUtils.unescapeHtml4(html));
                     String dateAsString = row.get("post_date").getAsString();
                     dateAsString = dateAsString.replace("-", "/");
                     dateAsString = dateAsString.replace(dateAsString.substring(dateAsString.indexOf(" ")), "");

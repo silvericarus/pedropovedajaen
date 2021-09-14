@@ -102,7 +102,6 @@ public class LastNewsAdapter extends RecyclerView.Adapter<LastNewsAdapter.LastNe
 
         public void bindNewsItem(News item) {
             title.setText(item.getTitle());
-            Log.i("new",item.getContent());
             content.setText(item.getContent());
             if (item.getImg() != null){
                 if (item.getImg().equals("none") || !item.getImg().startsWith("https")) {
