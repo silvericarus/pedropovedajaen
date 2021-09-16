@@ -3,7 +3,9 @@
     <string name="title_activity_main">Parroquia San Pedro Poveda Jaén</string>
     <string name="tab_church">Parroquia</string>
     <string name="tab_columbarium">Columbario</string>
-    <string name="tab_news">Noticias</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="preference_file_key" translatable="false">com.silvericarus.parroquiasanpedropovedajaen.PREFERENCE_FILE_KEY</string>
+    <string name="tab_news">Inicio</string>
+    <string name="tab_categories">Categorías</string>
+    <string name="title_activity_news">Noticias</string>
+    <string name="title_activity_info">Más Info</string>
+    <string name="error">ERROR</string>
 </resources>

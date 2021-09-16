@@ -11,12 +11,18 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
     </style>
 
     <style name="Theme.ParroquiaSanPedroPovedaJaén.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.CategoryChip"
+        parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif-condensed-light</item>
     </style>
 
     <style name="Theme.ParroquiaSanPedroPovedaJaén.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light" />

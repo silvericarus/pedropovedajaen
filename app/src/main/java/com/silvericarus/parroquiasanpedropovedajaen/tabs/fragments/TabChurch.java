@@ -27,6 +27,7 @@ import com.silvericarus.parroquiasanpedropovedajaen.R;
 import com.silvericarus.parroquiasanpedropovedajaen.adapters.CalendarAdapter;
 import com.silvericarus.parroquiasanpedropovedajaen.io.ApiAdapter;
 import com.silvericarus.parroquiasanpedropovedajaen.models.News;
+import com.silvericarus.parroquiasanpedropovedajaen.models.RandomImages;
 import com.silvericarus.parroquiasanpedropovedajaen.tabs.CustomGridLayoutManager;
 
 import org.jsoup.Jsoup;
@@ -147,6 +148,8 @@ public class TabChurch extends Fragment implements Callback<JsonElement> {
                     dateAsString = dateAsString.replace(dateAsString.substring(dateAsString.indexOf(" ")),"");
                     news1.setFecha(dateAsString);
                     news1.setUrl(row.get("guid").getAsString());
+                    RandomImages randomImages = new RandomImages();
+                    news1.setImg(randomImages.getImage());
                     Call<JsonElement> callImage = ApiAdapter.getApiService().getImageFromNews(news1.getId());
                     callImage.enqueue(this);
                     mCAdapter.addItemToItemList(news1);

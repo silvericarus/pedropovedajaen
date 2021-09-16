@@ -1,6 +1,7 @@
 package com.silvericarus.parroquiasanpedropovedajaen.tabs;
 
 import com.silvericarus.parroquiasanpedropovedajaen.R;
+import com.silvericarus.parroquiasanpedropovedajaen.tabs.fragments.TabCategories;
 import com.silvericarus.parroquiasanpedropovedajaen.tabs.fragments.TabChurch;
 import com.silvericarus.parroquiasanpedropovedajaen.tabs.fragments.TabColumbarium;
 import com.silvericarus.parroquiasanpedropovedajaen.tabs.fragments.TabNews;
@@ -25,8 +26,9 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
 
     public enum Tab {
         NEWS(0,R.string.tab_news),
-        COLUMBARIUM(1, R.string.tab_columbarium),
+        CATEGORIES(1,R.string.tab_categories),
         CHURCH(2,R.string.tab_church);
+
         final public int title;
         final public int position;
 
@@ -57,12 +59,12 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
 
 
     public Fragment createFragment(int position) {
-        if (position == Tab.COLUMBARIUM.position){
-            return TabColumbarium.newInstance();
-        }else if(position == Tab.NEWS.position) {
+        if(position == Tab.NEWS.position) {
             return TabNews.newInstance();
         }else if (position == Tab.CHURCH.position) {
             return TabChurch.newInstance();
+        }else if (position == Tab.CATEGORIES.position) {
+            return TabCategories.newInstance();
         }else {
             throw new IllegalArgumentException("unknown position " + position);
         }

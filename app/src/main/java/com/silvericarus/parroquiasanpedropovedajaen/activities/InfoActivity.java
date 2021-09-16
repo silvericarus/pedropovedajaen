@@ -1,8 +1,10 @@
-package com.silvericarus.parroquiasanpedropovedajaen;
+package com.silvericarus.parroquiasanpedropovedajaen.activities;
 
 
 import android.os.Bundle;
 import android.view.MenuItem;
+
+import com.silvericarus.parroquiasanpedropovedajaen.R;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
