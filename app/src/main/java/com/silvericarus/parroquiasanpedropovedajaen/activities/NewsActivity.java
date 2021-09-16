@@ -101,34 +101,9 @@ public class NewsActivity extends AppCompatActivity implements Callback<JsonElem
             JsonObject pack = response.body().getAsJsonObject();
             if (pack.has("news")){
                 JsonArray news = pack.getAsJsonArray("news");
-                if (news.size()<2){
-                    mLNAdapter.getItemList().remove(0);
-                    mLNAdapter.notifyDataSetChanged();
-                    for (int i = 0; i < news.size(); i++) {
-                        News news1 = new News();
-                        JsonObject row = news.get(i).getAsJsonObject();
-                        news1.setId(row.get("ID").getAsInt());
-                        news1.setTitle(row.get("post_title").getAsString());
-                        Document.OutputSettings outputSettings = new Document.OutputSettings();
-                        outputSettings.prettyPrint(false);
-                        String html = Jsoup.clean(row.get("post_content").getAsString(),"", Whitelist.none(),outputSettings);
-                        news1.setContent(StringEscapeUtils.unescapeHtml4(html));
-                        String dateAsString = row.get("post_date").getAsString();
-                        dateAsString = dateAsString.replace("-","/");
-                        dateAsString = dateAsString.replace(dateAsString.substring(dateAsString.indexOf(" ")),"");
-                        news1.setFecha(dateAsString);
-                        news1.setUrl(row.get("guid").getAsString());
-                        callCategories = ApiAdapter.getApiService().getCategoriesFromNew(news1.getId());
-                        callImage = ApiAdapter.getApiService().getImageFromNews(news1.getId());
-                        callCategories.enqueue(this);
-                        callImage.enqueue(this);
-                        mLNAdapter.addItemToItemList(news1);
-                        mLNAdapter.notifyDataSetChanged();
-                    }
-                }else{
-                    mLNAdapter.getItemList().remove(0);
-                    mLNAdapter.notifyDataSetChanged();
-                    for (int i = 0; i < news.size(); i++) {
+                mLNAdapter.getItemList().clear();
+                mLNAdapter.notifyDataSetChanged();
+                for (int i = 0; i < news.size(); i++) {
                         News news1 = new News();
                         JsonObject row = news.get(i).getAsJsonObject();
                         news1.setId(row.get("ID").getAsInt());
@@ -149,9 +124,7 @@ public class NewsActivity extends AppCompatActivity implements Callback<JsonElem
                         callImage.enqueue(this);
                         mLNAdapter.addItemToItemList(news1);
                         mLNAdapter.notifyDataSetChanged();
-                    }
                 }
-
             }else if(pack.has("categories")){
                 int id = pack.get("id").getAsInt();
                 for (News news:mLNAdapter.getItemList()) {
