@@ -92,7 +92,7 @@ public class ColumbariumNewsAdapter extends RecyclerView.Adapter<ColumbariumNews
             super(itemView);
 
             title = itemView.findViewById(R.id.title);
-            content = itemView.findViewById(R.id.content);
+            content = itemView.findViewById(R.id.content_home);
             img = itemView.findViewById(R.id.img);
             fecha = itemView.findViewById(R.id.fecha);
             categories = itemView.findViewById(R.id.category_group);

@@ -91,7 +91,7 @@ public class ImportantNewsAdapter extends RecyclerView.Adapter<ImportantNewsAdap
             super(itemView);
 
             title = itemView.findViewById(R.id.title);
-            content = itemView.findViewById(R.id.content);
+            content = itemView.findViewById(R.id.content_home);
             img = itemView.findViewById(R.id.img);
             fecha = itemView.findViewById(R.id.fecha);
             categories = itemView.findViewById(R.id.category_group);
@@ -126,7 +126,7 @@ public class ImportantNewsAdapter extends RecyclerView.Adapter<ImportantNewsAdap
                     chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor(randomColors.getColor())));
                     chip.setCloseIconVisible(false);
                     chip.setTextColor(Color.BLACK);
-                    chip.setTextAppearance(R.style.TextAppearance_MaterialComponents_Chip);
+                    chip.setTextAppearance(R.style.AppTheme_CategoryChip);
                     categories.addView(chip);
                 }
             }

@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.chip.ChipGroup;
 import com.silvericarus.parroquiasanpedropovedajaen.R;
 import com.silvericarus.parroquiasanpedropovedajaen.models.News;
 import com.silvericarus.parroquiasanpedropovedajaen.models.RandomImages;
@@ -80,7 +79,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         public CalendarViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
-            content = itemView.findViewById(R.id.content);
+            content = itemView.findViewById(R.id.content_home);
             img = itemView.findViewById(R.id.img);
         }
 
@@ -89,9 +88,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
             content.setText(news.getContent());
             if (news.getImg() != null){
                 if (news.getImg().equals("none") || !news.getImg().startsWith("https")) {
-                    RandomImages randomImages = new RandomImages();
-                    news.setImg(randomImages.getImage());
-                    Log.i("img1",news.getImg());
                     Uri imgUri = Uri.parse("file:///android_asset/" + news.getImg());
                     Glide.with(img.getContext()).load(imgUri).into(img);
                 } else {

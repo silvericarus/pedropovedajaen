@@ -11,11 +11,19 @@
         android:roundIcon="@mipmap/ic_icon_round"
         android:supportsRtl="false">
         <activity
-            android:name=".InfoActivity"
+            android:name=".activities.NewsActivity"
             android:exported="true"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_news"
             android:theme="@style/Theme.ParroquiaSanPedroPovedaJaén.NoActionBar"/>
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.InfoActivity"
+            android:exported="true"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_info"
+            android:theme="@style/Theme.ParroquiaSanPedroPovedaJaén.NoActionBar" />
+        <activity
+            android:name=".activities.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:label="@string/title_activity_main"

@@ -27,4 +27,10 @@ public interface ApiService {
 
     @GET("?action=get_calendar")
     Call<JsonElement> getHorario();
+
+    @GET("?action=get_news_by_category")
+    Call<JsonElement> getNewsFromCategory(@Query("id") Integer id);
+
+    @GET("?action=get_categories")
+    Call<JsonElement> getCategories();
 }
