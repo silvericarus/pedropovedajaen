@@ -28,15 +28,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="58dp"
+        android:background="@color/blue_lighter"
         android:orientation="vertical">
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_news"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/swipe_news">
+            android:layout_height="match_parent">
+
             <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/lista_noticias"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+                android:id="@+id/lista_noticias"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>
 

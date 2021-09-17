@@ -16,9 +16,11 @@ import com.silvericarus.parroquiasanpedropovedajaen.activities.NewsActivity;
 import com.silvericarus.parroquiasanpedropovedajaen.adapters.CategoriesAdapter;
 import com.silvericarus.parroquiasanpedropovedajaen.io.ApiAdapter;
 import com.silvericarus.parroquiasanpedropovedajaen.models.Category;
+import com.silvericarus.parroquiasanpedropovedajaen.models.CategorySort;
 import com.silvericarus.parroquiasanpedropovedajaen.tabs.CustomGridLayoutManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -100,6 +102,8 @@ public class TabCategories extends Fragment implements Callback<JsonElement> {
         }else{
             Log.e(String.valueOf(R.string.error),"response not successful");
         }
+        Collections.sort(categoryArrayList,new CategorySort());
+        mCAdapter.notifyDataSetChanged();
     }
 
     @Override
