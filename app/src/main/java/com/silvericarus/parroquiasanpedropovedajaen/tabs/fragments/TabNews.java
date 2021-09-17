@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,6 +51,7 @@ public class TabNews extends Fragment implements Callback<JsonElement> {
     Context context;
     Call<JsonElement> callCategories;
     Call<JsonElement> callImage;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -80,6 +82,15 @@ public class TabNews extends Fragment implements Callback<JsonElement> {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tab_news, container, false);
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_news);
+        swipeRefreshLayout.setColorSchemeResources(R.color.blue_lighter);
+        swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.blue_dark);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            Call<JsonElement> call = ApiAdapter.getApiService().getLastNews();
+            Call<JsonElement> call1 = ApiAdapter.getApiService().getImportantNews();
+            call.enqueue(this);
+            call1.enqueue(this);
+        });
         mImportantNewsList = view.findViewById(R.id.lista_noticia_importante);
         mLastNewsList = view.findViewById(R.id.lista_ultimas_noticias);
         mImportantNewsList.setLayoutManager(new LinearLayoutManager(context));
@@ -132,7 +143,7 @@ public class TabNews extends Fragment implements Callback<JsonElement> {
             if (pack.has("news")){
                 JsonArray news = pack.getAsJsonArray("news");
                 if (news.size()<2){
-                    mINAdapter.getItemList().remove(0);
+                    mINAdapter.getItemList().clear();
                     mINAdapter.notifyDataSetChanged();
                     for (int i = 0; i < news.size(); i++) {
                         News news1 = new News();
@@ -156,7 +167,7 @@ public class TabNews extends Fragment implements Callback<JsonElement> {
                         mINAdapter.notifyDataSetChanged();
                     }
                 }else{
-                    mLNAdapter.getItemList().remove(0);
+                    mLNAdapter.getItemList().clear();
                     mLNAdapter.notifyDataSetChanged();
                     for (int i = 0; i < news.size(); i++) {
                         News news1 = new News();
@@ -235,6 +246,7 @@ public class TabNews extends Fragment implements Callback<JsonElement> {
             }
             mLNAdapter.notifyDataSetChanged();
             mINAdapter.notifyDataSetChanged();
+            swipeRefreshLayout.setRefreshing(false);
             }else {
             Log.e("Error", "Respuesta vacia");
         }
