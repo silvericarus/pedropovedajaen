@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,6 +44,7 @@ public class TabChurch extends Fragment implements Callback<JsonElement> {
     RecyclerView mHorariosView;
     CalendarAdapter mCAdapter;
     public ArrayList<News> horariosList = new ArrayList<>();
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -69,6 +71,13 @@ public class TabChurch extends Fragment implements Callback<JsonElement> {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View viewFull = inflater.inflate(R.layout.fragment_tab_church, container, false);
+        swipeRefreshLayout = viewFull.findViewById(R.id.swipe_refresh_church);
+        swipeRefreshLayout.setColorSchemeResources(R.color.blue_lighter);
+        swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.blue_dark);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            Call<JsonElement> call = ApiAdapter.getApiService().getHorario();
+            call.enqueue(this);
+        });
         btnDnJulio = viewFull.findViewById(R.id.btnDnJulio);
         btnFacebook = viewFull.findViewById(R.id.btnFacebook);
         btnYoutube = viewFull.findViewById(R.id.btnYoutube);
@@ -133,6 +142,8 @@ public class TabChurch extends Fragment implements Callback<JsonElement> {
             assert response.body() != null;
             JsonObject pack = response.body().getAsJsonObject();
             if (pack.has("calendar")){
+                mCAdapter.getItemList().clear();
+                mCAdapter.notifyDataSetChanged();
                 JsonArray news = pack.getAsJsonArray("calendar");
                 for (int i = 0; i < news.size(); i++) {
                     News news1 = new News();
@@ -165,6 +176,8 @@ public class TabChurch extends Fragment implements Callback<JsonElement> {
 
                 }
             }
+            mCAdapter.notifyDataSetChanged();
+            swipeRefreshLayout.setRefreshing(false);
         }
     }
 
