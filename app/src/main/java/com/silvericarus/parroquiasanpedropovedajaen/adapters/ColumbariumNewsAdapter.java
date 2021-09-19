@@ -1,5 +1,6 @@
 package com.silvericarus.parroquiasanpedropovedajaen.adapters;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
@@ -14,7 +15,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.silvericarus.parroquiasanpedropovedajaen.R;
+import com.silvericarus.parroquiasanpedropovedajaen.activities.NewsActivity;
+import com.silvericarus.parroquiasanpedropovedajaen.io.ApiAdapter;
 import com.silvericarus.parroquiasanpedropovedajaen.models.News;
 import com.silvericarus.parroquiasanpedropovedajaen.models.RandomColors;
 import com.silvericarus.parroquiasanpedropovedajaen.models.RandomImages;
@@ -23,6 +29,9 @@ import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ColumbariumNewsAdapter extends RecyclerView.Adapter<ColumbariumNewsAdapter.ColumbariumNewsViewHolder> {
 
@@ -80,13 +89,15 @@ public class ColumbariumNewsAdapter extends RecyclerView.Adapter<ColumbariumNews
     }
 
 
-    public static class ColumbariumNewsViewHolder extends RecyclerView.ViewHolder{
+    public static class ColumbariumNewsViewHolder extends RecyclerView.ViewHolder implements Callback<JsonElement> {
 
         private final TextView title;
         private final TextView content;
         private final ImageView img;
         private final TextView fecha;
         private final ChipGroup categories;
+        Chip chip;
+        String categorySelected;
 
         public ColumbariumNewsViewHolder(View itemView) {
             super(itemView);
@@ -126,10 +137,42 @@ public class ColumbariumNewsAdapter extends RecyclerView.Adapter<ColumbariumNews
                     chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor(randomColors.getColor())));
                     chip.setCloseIconVisible(false);
                     chip.setTextColor(Color.BLACK);
+                    chip.setOnClickListener(view -> {
+                        categorySelected = ((Chip)view).getText().toString();
+                        Call<JsonElement> call = ApiAdapter.getApiService().getCategories();
+                        call.enqueue(this);
+                    });
                     chip.setTextAppearance(R.style.TextAppearance_MaterialComponents_Chip);
                     categories.addView(chip);
                 }
             }
+        }
+
+        @Override
+        public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+            if (response.isSuccessful()) {
+                if (response.body() != null) {
+                    JsonArray jsoncategories = response.body().getAsJsonObject().getAsJsonArray("calendar");
+                    for (int i = 0; i < jsoncategories.size();i++){
+                        JsonObject row = jsoncategories.get(i).getAsJsonObject();
+                        for (int j = 0;j<row.size();j++){
+                            if (categorySelected.equals(row.get("name").getAsString())){
+                                int id = row.get("term_id").getAsInt();
+                                Intent intent = new Intent(categories.getContext(), NewsActivity.class);
+                                intent.putExtra("categoryId",id);
+                                categories.getContext().startActivity(intent);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+        @Override
+        public void onFailure(Call<JsonElement> call, Throwable t) {
+
         }
     }
 }
