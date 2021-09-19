@@ -12,10 +12,11 @@ import com.silvericarus.parroquiasanpedropovedajaen.models.Category;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.CategoriesViewHolder> {
+public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.CategoriesViewHolder> implements View.OnLongClickListener {
 
     private ArrayList<Category> itemList;
     private View.OnClickListener mListener;
+    private View.OnLongClickListener mLListener;
 
     public CategoriesAdapter(ArrayList<Category> itemList) {
         this.itemList = itemList;
@@ -42,7 +43,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
                 .inflate(R.layout.category_item,parent,false);
 
 
-
+        view.setOnLongClickListener(mLListener);
         view.setOnClickListener(mListener);
 
         return new CategoriesAdapter.CategoriesViewHolder(view);
@@ -62,10 +63,32 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
         this.mListener = listener;
     }
 
+    public void setOnLongClickListener(View.OnLongClickListener listener){ this.mLListener = listener; }
+
     public void onClick(View v) {
         if(mListener != null){
             mListener.onClick(v);
         }
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        if(mLListener != null){
+            mLListener.onLongClick(view);
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     public static class CategoriesViewHolder extends RecyclerView.ViewHolder{
