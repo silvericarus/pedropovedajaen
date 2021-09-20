@@ -1,9 +1,11 @@
 package com.silvericarus.parroquiasanpedropovedajaen.adapters;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,6 +99,7 @@ public class ImportantNewsAdapter extends RecyclerView.Adapter<ImportantNewsAdap
         private final ChipGroup categories;
         Chip chip;
         String categorySelected;
+        SharedPreferences prefs;
 
         public ImportantNewsViewHolder(View itemView) {
             super(itemView);
@@ -112,14 +115,21 @@ public class ImportantNewsAdapter extends RecyclerView.Adapter<ImportantNewsAdap
 
 
         public void bindNewsItem(News item) {
+            prefs = PreferenceManager.getDefaultSharedPreferences(content.getContext());
             title.setText(item.getTitle());
-            Log.i("new",item.getContent());
             content.setText(item.getContent());
+            int tamanioElegido = prefs.getInt(content.getContext().getResources().getString(R.string.pref_numArticulos_titulo),20);
+            if (tamanioElegido >= 20) {
+                content.setTextSize(tamanioElegido);
+                title.setTextSize(tamanioElegido);
+            } else {
+                content.setTextSize(20);
+                title.setTextSize(20);
+            }
             if (item.getImg() != null){
                 if (item.getImg().equals("none") || !item.getImg().startsWith("https")) {
                     RandomImages randomImages = new RandomImages();
                     item.setImg(randomImages.getImage());
-                    Log.i("img1",item.getImg());
                     Uri imgUri = Uri.parse("file:///android_asset/" + item.getImg());
                     Glide.with(img.getContext()).load(imgUri).into(img);
                 } else {

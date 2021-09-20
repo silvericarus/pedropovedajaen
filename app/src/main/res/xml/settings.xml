@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SeekBarPreference
+        android:defaultValue="true"
+        android:key="@string/pref_numArticulos_titulo"
+        android:max="30"
+        android:title="Edite el tamaño del texto de las noticias aquí"
+        app:showSeekBarValue="true" />
+
+</PreferenceScreen>

@@ -37,6 +37,7 @@
                     android:layout_marginBottom="8dp"
                     android:text="Noticia Destacada"
                     android:textAlignment="center"
+                    android:textSize="30sp"
                     android:textStyle="bold" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -58,6 +59,7 @@
                     android:layout_marginBottom="8dp"
                     android:text="Últimas Noticias"
                     android:textAlignment="center"
+                    android:textSize="30sp"
                     android:textStyle="bold" />
 
                 <androidx.recyclerview.widget.RecyclerView

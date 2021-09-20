@@ -2,9 +2,11 @@ package com.silvericarus.parroquiasanpedropovedajaen.adapters;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -100,6 +102,7 @@ public class LastNewsAdapter extends RecyclerView.Adapter<LastNewsAdapter.LastNe
         private final ChipGroup categories;
         Chip chip;
         String categorySelected;
+        SharedPreferences prefs;
 
         public LastNewsViewHolder(View itemView) {
             super(itemView);
@@ -113,9 +116,19 @@ public class LastNewsAdapter extends RecyclerView.Adapter<LastNewsAdapter.LastNe
 
 
 
+
         public void bindNewsItem(News item) {
+            prefs = PreferenceManager.getDefaultSharedPreferences(content.getContext());
             title.setText(item.getTitle());
             content.setText(item.getContent());
+            int tamanioElegido = prefs.getInt(content.getContext().getResources().getString(R.string.pref_numArticulos_titulo),20);
+            if (tamanioElegido >= 20) {
+                content.setTextSize(tamanioElegido);
+                title.setTextSize(tamanioElegido);
+            } else {
+                content.setTextSize(20);
+                title.setTextSize(20);
+            }
             if (item.getImg() != null){
                 if (item.getImg().equals("none") || !item.getImg().startsWith("https")) {
                     RandomImages randomImages = new RandomImages();

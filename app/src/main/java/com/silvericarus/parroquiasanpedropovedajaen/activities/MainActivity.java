@@ -1,9 +1,11 @@
 package com.silvericarus.parroquiasanpedropovedajaen.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -40,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.info) {
             Intent intent = new Intent(MainActivity.this, InfoActivity.class);
             startActivity(intent);
+        }else if (id == R.id.ajustes) {
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -47,11 +52,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+        initializeSettings();
         setupToolbar();
         setupViewPager();
         setupTabLayout();
+    }
+
+    private void initializeSettings() {
+        PreferenceManager.setDefaultValues(this,R.xml.settings,false);
     }
 
 
