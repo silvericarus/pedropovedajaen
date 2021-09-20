@@ -1,6 +1,8 @@
 package com.silvericarus.parroquiasanpedropovedajaen.adapters;
 
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,6 +77,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         private final TextView title;
         private final TextView content;
         private final ImageView img;
+        SharedPreferences prefs;
 
         public CalendarViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -84,8 +87,17 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         }
 
         public void bindCalendarItem(News news) {
+            prefs = PreferenceManager.getDefaultSharedPreferences(content.getContext());
             title.setText(news.getTitle());
             content.setText(news.getContent());
+            int tamanioElegido = prefs.getInt(img.getContext().getResources().getString(R.string.pref_numArticulos_titulo),20);
+            if (tamanioElegido >= 20) {
+                content.setTextSize(tamanioElegido);
+                title.setTextSize(tamanioElegido);
+            } else {
+                content.setTextSize(20);
+                title.setTextSize(20);
+            }
             if (news.getImg() != null){
                 if (news.getImg().equals("none") || !news.getImg().startsWith("https")) {
                     Uri imgUri = Uri.parse("file:///android_asset/" + news.getImg());
