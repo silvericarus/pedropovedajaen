@@ -63,8 +63,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:maxLines="30"
-        android:maxEms="12"
+        android:maxLines="45"
         android:autoLink="web"
         android:ellipsize="end"
         android:paddingStart="@dimen/activity_horizontal_margin"
@@ -74,7 +73,7 @@
         app:layout_constraintBottom_toTopOf="@+id/category_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+        app:layout_constraintTop_toBottomOf="@+id/title"/>
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/category_group"
