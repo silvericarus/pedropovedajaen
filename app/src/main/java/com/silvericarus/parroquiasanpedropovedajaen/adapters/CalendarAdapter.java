@@ -100,6 +100,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
             }
             if (news.getImg() != null){
                 if (news.getImg().equals("none") || !news.getImg().startsWith("https")) {
+                    RandomImages randomImages = new RandomImages();
+                    news.setImg(randomImages.getImage());
                     Uri imgUri = Uri.parse("file:///android_asset/" + news.getImg());
                     Glide.with(img.getContext()).load(imgUri).into(img);
                 } else {
