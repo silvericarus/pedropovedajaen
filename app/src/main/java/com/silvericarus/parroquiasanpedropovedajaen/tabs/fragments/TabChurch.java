@@ -105,13 +105,15 @@ public class TabChurch extends Fragment implements Callback<JsonElement> {
 
         btnFacebook.setOnClickListener(view -> {
             Intent intent;
-            String url = "fb://page/150237331246";
+            String url;
             try {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW);
-                browserIntent.setPackage("com.facebook.katana");
-                browserIntent.setData(Uri.parse(url));
-                startActivity(browserIntent);
+                url = "fb://page/150237331246";
+                intent = new Intent(Intent.ACTION_VIEW);
+                intent.setPackage("com.facebook.katana");
+                intent.setData(Uri.parse(url));
+                startActivity(intent);
             } catch (ActivityNotFoundException e) {
+                url = "https://www.facebook.com/parroquia2.0";
                 intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(url));
                 startActivity(intent);
