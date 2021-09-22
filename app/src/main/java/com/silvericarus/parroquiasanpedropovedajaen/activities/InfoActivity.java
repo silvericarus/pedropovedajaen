@@ -3,6 +3,7 @@ package com.silvericarus.parroquiasanpedropovedajaen.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -22,6 +23,7 @@ public class InfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
         setupToolbar();
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
         hecho_por = findViewById(R.id.hechoPor);
         texto_bugs = findViewById(R.id.texto_bugs);
         hecho_por.setText(R.string.hecho_por);
