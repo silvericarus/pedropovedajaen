@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blue_lighter"
     tools:context=".activities.InfoActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -20,8 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:elevation="0dp"
-            app:layout_scrollFlags="scroll|enterAlways" >
-        </com.google.android.material.appbar.MaterialToolbar>
+            app:layout_scrollFlags="scroll|enterAlways"></com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
@@ -32,21 +32,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/blue_lighter">
-
-            <TextView
-                android:id="@+id/hechoPor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:text="hecho"
-                android:textSize="@dimen/content_size_big"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/texto_bugs"
@@ -55,15 +41,45 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
                 android:text="TextView"
                 android:textSize="@dimen/content_size_big"
+                app:layout_constraintBottom_toTopOf="@+id/contactoTextTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/contactoTextTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="Información de Contacto"
+                app:layout_constraintBottom_toTopOf="@+id/contactoText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/hechoPor" />
+                app:layout_constraintTop_toBottomOf="@id/texto_bugs" />
+
+            <TextView
+                android:id="@+id/contactoText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:autoLink="web"
+                android:text="TextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/contactoTextTitle" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
-
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

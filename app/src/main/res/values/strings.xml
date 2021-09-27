@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Parroquia San Pedro Poveda Jaén</string>
-    <string name="title_activity_main">Parroquia San Pedro Poveda Jaén</string>
+    <string name="app_name">Pedro Poveda Jaén App</string>
+    <string name="title_activity_main">Pedro Poveda Jaén App</string>
     <string name="tab_church">Parroquia</string>
     <string name="tab_columbarium">Columbario</string>
     <string name="tab_news">Inicio</string>
@@ -8,7 +8,6 @@
     <string name="title_activity_news">Noticias</string>
     <string name="title_activity_info">Más Info</string>
     <string name="error">ERROR</string>
-    <string name="hecho_por">Hecho por Alberto González Rosa. Versión 1.0 2021</string>
     <string name="texto_bugs">Es posible encontrarse fallos y errores en la aplicación.
         En caso de encontrarlos, se pueden informar en la Play Store escribiendo una reseña.
         Si no encuentra ningún fallo y le ha resultado útil la aplicación, también puede escribir una reseña con consejos para futuras versiones. ¡Gracias por su ayuda, entre todos construimos una mejor tecnología!</string>
@@ -18,4 +17,5 @@
     <string name="title_activity_settings">Configuración</string>
     <!-- Preferencia Tamaño Texto -->
     <string name="pref_numArticulos_titulo">Tamaño de Texto</string>
+    <string name="contacto">Esta aplicación contiene noticias de la página web https://pedropoveda.es , la cual pretende dar información sobre la Parroquia San Pedro Poveda de Jaén. En caso de necesitar contacto, puedes contactarnos en parroquiapedropoveda@gmail.com o 661941531 </string>
 </resources>
