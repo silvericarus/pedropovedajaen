@@ -15,7 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 
 public class InfoActivity extends AppCompatActivity {
 
-    private TextView hecho_por,texto_bugs;
+    private TextView texto_bugs,contactoText,contactoTextTitle;
     SharedPreferences prefs;
 
     @Override
@@ -24,17 +24,20 @@ public class InfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_info);
         setupToolbar();
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        hecho_por = findViewById(R.id.hechoPor);
         texto_bugs = findViewById(R.id.texto_bugs);
-        hecho_por.setText(R.string.hecho_por);
+        contactoText = findViewById(R.id.contactoText);
+        contactoTextTitle = findViewById(R.id.contactoTextTitle);
         texto_bugs.setText(R.string.texto_bugs);
+        contactoText.setText(R.string.contacto);
         int tamanioElegido = prefs.getInt(getResources().getString(R.string.pref_numArticulos_titulo),20);
         if (tamanioElegido >= 20) {
-            hecho_por.setTextSize(tamanioElegido);
             texto_bugs.setTextSize(tamanioElegido);
+            contactoText.setTextSize(tamanioElegido);
+            contactoTextTitle.setTextSize(tamanioElegido);
         } else {
-            hecho_por.setTextSize(20);
             texto_bugs.setTextSize(20);
+            contactoText.setTextSize(20);
+            contactoTextTitle.setTextSize(20);
         }
     }
 
