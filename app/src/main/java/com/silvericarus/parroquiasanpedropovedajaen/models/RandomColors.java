@@ -14,9 +14,9 @@ public class RandomColors {
 
         colors.addAll(Arrays.asList(
             "#FF673A",
-                "#963246","#329682",
-                "#FF0096","#FF4C4C","#68C3FB",
-                "#F2C887","#03719C","#7BC8F6","#A7FFB5",
+                "#5AD4F2","#329682",
+                "#FF47B3","#FF4C4C","#68C3FB",
+                "#F2C887","#2A9D8F","#7BC8F6","#A7FFB5",
                 "#FEB2D0","#13BBAF","#FFE5AD","#D3494E","#FDDC5C"
 
         ));
