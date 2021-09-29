@@ -61,6 +61,7 @@
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
                     android:background="@null"
+                    android:contentDescription="Botón de WhatsApp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/book_cross" />
 
@@ -69,6 +70,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="64dp"
                     android:layout_weight="1"
+                    android:contentDescription="Etiqueta para Botón de WhatsApp"
                     android:gravity="center"
                     android:includeFontPadding="true"
                     android:labelFor="@id/btnDnJulio"
@@ -97,6 +99,7 @@
                     android:layout_weight=".50"
                     android:adjustViewBounds="true"
                     android:background="@null"
+                    android:contentDescription="Botón de Facebook"
                     android:scaleType="fitCenter"
                     android:src="@drawable/facebook" />
 
@@ -107,6 +110,7 @@
                     android:layout_weight=".50"
                     android:adjustViewBounds="true"
                     android:background="@null"
+                    android:contentDescription="Botón de Youtube"
                     android:scaleType="fitCenter"
                     android:src="@drawable/youtube" />
             </LinearLayout>
