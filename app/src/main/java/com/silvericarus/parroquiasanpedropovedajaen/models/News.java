@@ -1,6 +1,8 @@
 package com.silvericarus.parroquiasanpedropovedajaen.models;
 
 import android.content.Context;
+import android.graphics.Color;
+
 import java.util.ArrayList;
 
 public class News {

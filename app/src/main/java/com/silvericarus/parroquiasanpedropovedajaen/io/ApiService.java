@@ -33,4 +33,7 @@ public interface ApiService {
 
     @GET("?action=get_categories")
     Call<JsonElement> getCategories();
+
+    @GET("?action=get_last_news")
+    Call<JsonElement> getLastOneNews();
 }
