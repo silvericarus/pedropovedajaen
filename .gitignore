@@ -8,3 +8,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+/app/debug/app-debug.aab
+/app/debug/app-debug.apk
+/app/release/app-release.aab
+/app/debug/output-metadata.json
+/private_key.pepk
