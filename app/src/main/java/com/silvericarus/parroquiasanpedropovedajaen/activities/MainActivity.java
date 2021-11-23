@@ -1,12 +1,9 @@
 package com.silvericarus.parroquiasanpedropovedajaen.activities;
 
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,7 +17,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.silvericarus.parroquiasanpedropovedajaen.R;
-import com.silvericarus.parroquiasanpedropovedajaen.services.ServicioNotificaciones;
+import com.silvericarus.parroquiasanpedropovedajaen.services.ServicioNotifications;
 import com.silvericarus.parroquiasanpedropovedajaen.tabs.ViewPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
@@ -60,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         setupToolbar();
         setupViewPager();
         setupTabLayout();
-        Intent bindService = new Intent(this,ServicioNotificaciones.class);
+        Intent bindService = new Intent(this, ServicioNotifications.class);
         startService(bindService);
     }
 
