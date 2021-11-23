@@ -1,14 +1,11 @@
 package com.silvericarus.parroquiasanpedropovedajaen.services;
 
-import android.app.IntentService;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -17,14 +14,12 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.bumptech.glide.Glide;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.silvericarus.parroquiasanpedropovedajaen.R;
 import com.silvericarus.parroquiasanpedropovedajaen.io.ApiAdapter;
 import com.silvericarus.parroquiasanpedropovedajaen.models.News;
-import com.silvericarus.parroquiasanpedropovedajaen.models.RandomColors;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.jsoup.Jsoup;
@@ -34,15 +29,13 @@ import org.jsoup.safety.Whitelist;
 
 import java.util.ArrayList;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ServicioNotificaciones extends IntentService {
-    NotificarNoticias notificarNoticias = new NotificarNoticias();
+public class ServicioNotifications extends Service {
+    ServicioNotifications.NotificarNoticias notificarNoticias = new ServicioNotifications.NotificarNoticias();
     SharedPreferences sp;
     NotificationManager notificationManager;
     NotificationCompat.Builder notificationNews26;
@@ -57,22 +50,17 @@ public class ServicioNotificaciones extends IntentService {
     int blue_normal;
     int notID1 = 1;
     NotificationChannel defaultChanel;
-
-    /**
-     * @param name
-     * @deprecated
-     */
-    public ServicioNotificaciones(String name) {
-        super(name);
+    public ServicioNotifications() {
     }
 
-    public ServicioNotificaciones(){
-        super(null);
+    @Override
+    public void onStart(Intent intent, int startId) {
+        notificarNoticias.hacerEnBackGround();
+        super.onStart(intent, startId);
     }
 
     @Override
     public void onCreate() {
-        super.onCreate();
         sp = getApplication().getSharedPreferences("Notifications", Context.MODE_PRIVATE);
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         editor = sp.edit();
@@ -92,46 +80,34 @@ public class ServicioNotificaciones extends IntentService {
         }else{
             notificationNews25 = new NotificationCompat.Builder(getApplication());
         }
+        super.onCreate();
     }
 
-    @Override
-    public void onStart(@Nullable Intent intent, int startId) {
-        Log.i("Notify","service acting");
-        super.onStart(intent, startId);
-    }
-
-    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
-        notificarNoticias.hacerEnBackGround();
-    }
+    private class NotificarNoticias implements Callback<JsonElement> {
+        ServicioNotifications.NotificarNoticias nn = this;
 
-    private class NotificarNoticias implements Callback<JsonElement>{
-
-        NotificarNoticias nn = this;
 
         void hacerEnBackGround(){
             handler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Log.i("Notify","service acting");
-                                        getLastOneNews.enqueue(nn);
-                                    }
-                                }
-                    , TIEMPO);
-        }
 
+                @Override
+                public void run() {
+                    getLastOneNews.enqueue(nn);
+                }
+            },TIEMPO);
+        }
         @Override
         public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-            if (response.isSuccessful()) {
+            if(response.isSuccessful()){
                 assert response.body() != null;
                 JsonObject pack = response.body().getAsJsonObject();
-                if (pack.has("news")) {
+                if (pack.has("news")){
                     JsonArray news = pack.getAsJsonArray("news");
                     for (int i = 0; i < news.size(); i++) {
                         News news1 = new News();
@@ -196,7 +172,7 @@ public class ServicioNotificaciones extends IntentService {
 
         }
 
-        public void notifyNews(News news){
+        public void notifyNews (News news) {
             Log.i("Notify",news.toString());
             if(news.getContent() != null) {
                 if(Build.VERSION.SDK_INT >= 26) {
@@ -207,12 +183,13 @@ public class ServicioNotificaciones extends IntentService {
                             .bigText(news.getContent()));
                     notificationNews26.setSmallIcon(R.mipmap.ic_icon_round);
                     notificationNews26.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                    notificationNews26.setChannelId("pedropoveda");
                     notificationManager.notify(notID1, notificationNews26.build());
                 }else{
                     notificationNews25.setContentText(news.getContent());
                     notificationNews25.setColor(blue_normal);
                     notificationNews25.setContentTitle(news.getTitle());
-                    notificationNews26.setStyle(new NotificationCompat.BigTextStyle()
+                    notificationNews25.setStyle(new NotificationCompat.BigTextStyle()
                             .bigText(news.getContent()));
                     notificationNews25.setSmallIcon(R.mipmap.ic_icon_round);
                     notificationNews25.setPriority(NotificationCompat.PRIORITY_DEFAULT);
