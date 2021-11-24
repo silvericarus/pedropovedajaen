@@ -54,9 +54,9 @@ public class ServicioNotifications extends Service {
     }
 
     @Override
-    public void onStart(Intent intent, int startId) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
         notificarNoticias.hacerEnBackGround();
-        super.onStart(intent, startId);
+        return Service.START_STICKY;
     }
 
     @Override
@@ -84,10 +84,7 @@ public class ServicioNotifications extends Service {
     }
 
     @Override
-    public IBinder onBind(Intent intent) {
-
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
+    public IBinder onBind(Intent intent) { return null; }
 
     private class NotificarNoticias implements Callback<JsonElement> {
         ServicioNotifications.NotificarNoticias nn = this;
