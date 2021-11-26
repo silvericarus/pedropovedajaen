@@ -95,7 +95,7 @@ public class ServicioNotifications extends Service {
 
                 @Override
                 public void run() {
-                    getLastOneNews.enqueue(nn);
+                    getLastOneNews.clone().enqueue(nn);
                 }
             },TIEMPO);
         }
