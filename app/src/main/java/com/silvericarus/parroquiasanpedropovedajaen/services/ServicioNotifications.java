@@ -178,7 +178,7 @@ public class ServicioNotifications extends Service {
                     notificationNews26.setContentTitle(news.getTitle());
                     notificationNews26.setStyle(new NotificationCompat.BigTextStyle()
                             .bigText(news.getContent()));
-                    notificationNews26.setSmallIcon(R.mipmap.ic_icon_round);
+                    notificationNews26.setSmallIcon(R.mipmap.ic_icon_new_round);
                     notificationNews26.setPriority(NotificationCompat.PRIORITY_DEFAULT);
                     notificationNews26.setChannelId("pedropoveda");
                     notificationManager.notify(notID1, notificationNews26.build());
