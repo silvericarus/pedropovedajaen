@@ -10,6 +10,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -94,6 +95,7 @@ public class NewsActivity extends AppCompatActivity implements Callback<JsonElem
         return true;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
         if (response.isSuccessful()){

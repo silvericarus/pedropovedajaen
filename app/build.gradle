@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 33
     viewBinding {
         enabled = true
     }
@@ -11,10 +11,10 @@ android {
     defaultConfig {
         applicationId "com.silvericarus.parroquiasanpedropovedajaen"
         minSdk 21
-        targetSdk 30
-        versionCode 9
+        targetSdk 33
+        versionCode 10
 
-        versionName "1.0"
+        versionName "2.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -32,6 +32,7 @@ android {
     buildFeatures {
         viewBinding true
     }
+    namespace 'com.silvericarus.parroquiasanpedropovedajaen'
 }
 
 dependencies {
