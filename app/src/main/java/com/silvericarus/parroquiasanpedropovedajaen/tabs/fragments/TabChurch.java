@@ -155,7 +155,7 @@ public class TabChurch extends Fragment implements Callback<JsonElement> {
                     Document.OutputSettings outputSettings = new Document.OutputSettings();
                     outputSettings.prettyPrint(false);
                     outputSettings.escapeMode(Entities.EscapeMode.extended);
-                    news1.setContent(Jsoup.clean(row.get("post_content").getAsString(),"", Whitelist.none(),outputSettings));
+                    news1.setContent(Jsoup.clean(row.get("post_content").getAsString().replaceAll("(\\s{0,1}&nbsp;\\s{0,1})+","\n\n"),"", Whitelist.none(),outputSettings));
                     String dateAsString = row.get("post_date").getAsString();
                     dateAsString = dateAsString.replace("-","/");
                     dateAsString = dateAsString.replace(dateAsString.substring(dateAsString.indexOf(" ")),"");

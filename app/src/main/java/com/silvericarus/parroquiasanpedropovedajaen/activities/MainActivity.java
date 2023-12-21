@@ -17,7 +17,6 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.silvericarus.parroquiasanpedropovedajaen.R;
-import com.silvericarus.parroquiasanpedropovedajaen.services.ServicioNotifications;
 import com.silvericarus.parroquiasanpedropovedajaen.tabs.ViewPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
@@ -57,8 +56,6 @@ public class MainActivity extends AppCompatActivity {
         setupToolbar();
         setupViewPager();
         setupTabLayout();
-        Intent bindService = new Intent(this, ServicioNotifications.class);
-        startService(bindService);
     }
 
     private void initializeSettings() {
