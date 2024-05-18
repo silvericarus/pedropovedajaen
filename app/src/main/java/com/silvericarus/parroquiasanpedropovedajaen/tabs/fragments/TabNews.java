@@ -26,8 +26,12 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities;
 import org.jsoup.safety.Whitelist;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -135,6 +139,21 @@ public class TabNews extends Fragment implements Callback<JsonElement> {
         return view;
     }
 
+    private static String capitalize(String input) {
+        String[] words = input.split(" ");
+        StringBuilder capitalizedString = new StringBuilder();
+        for (String word : words) {
+            if (word.length() > 1) {
+                capitalizedString.append(Character.toUpperCase(word.charAt(0)))
+                        .append(word.substring(1).toLowerCase());
+            } else {
+                capitalizedString.append(word.toUpperCase());
+            }
+            capitalizedString.append(" ");
+        }
+        return capitalizedString.toString().trim();
+    }
+
     @Override
     public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
         if (response.isSuccessful()){
@@ -142,6 +161,8 @@ public class TabNews extends Fragment implements Callback<JsonElement> {
             JsonObject pack = response.body().getAsJsonObject();
             if (pack.has("news")){
                 JsonArray news = pack.getAsJsonArray("news");
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+                SimpleDateFormat outputFormat = new SimpleDateFormat("EEEE, d 'de' MMMM 'de' yyyy, HH:mm", new Locale("es", "ES"));
                 if (news.size()<2){
                     mINAdapter.getItemList().clear();
                     mINAdapter.notifyDataSetChanged();
@@ -155,9 +176,15 @@ public class TabNews extends Fragment implements Callback<JsonElement> {
                         String html = Jsoup.clean(row.get("post_content").getAsString(),"", Whitelist.none(),outputSettings);
                         news1.setContent(StringEscapeUtils.unescapeHtml4(html));
                         String dateAsString = row.get("post_date").getAsString();
-                        dateAsString = dateAsString.replace("-","/");
-                        dateAsString = dateAsString.replace(dateAsString.substring(dateAsString.indexOf(" ")),"");
-                        news1.setFecha(dateAsString);
+                        Date tmp = null;
+                        try {
+                            tmp = inputFormat.parse(dateAsString);
+                            String formattedDate = outputFormat.format(tmp);
+                            formattedDate = capitalize(formattedDate);
+                            news1.setFecha(formattedDate);
+                        } catch (ParseException e) {
+                            throw new RuntimeException(e);
+                        }
                         news1.setUrl(row.get("guid").getAsString());
                         callCategories = ApiAdapter.getApiService().getCategoriesFromNew(news1.getId());
                         callImage = ApiAdapter.getApiService().getImageFromNews(news1.getId());
@@ -180,9 +207,16 @@ public class TabNews extends Fragment implements Callback<JsonElement> {
                         String html = Jsoup.clean(row.get("post_content").getAsString(),"", Whitelist.none(),outputSettings);
                         news1.setContent(StringEscapeUtils.unescapeHtml4(html));
                         String dateAsString = row.get("post_date").getAsString();
-                        dateAsString = dateAsString.replace("-","/");
-                        dateAsString = dateAsString.replace(dateAsString.substring(dateAsString.indexOf(" ")),"");
-                        news1.setFecha(dateAsString);
+                        Date tmp = null;
+                        try {
+                            tmp = inputFormat.parse(dateAsString);
+                            String formattedDate = outputFormat.format(tmp);
+                            formattedDate = capitalize(formattedDate);
+                            news1.setFecha(formattedDate);
+                        } catch (ParseException e) {
+                            throw new RuntimeException(e);
+                        }
+
                         news1.setUrl(row.get("guid").getAsString());
                         callCategories = ApiAdapter.getApiService().getCategoriesFromNew(news1.getId());
                         callImage = ApiAdapter.getApiService().getImageFromNews(news1.getId());

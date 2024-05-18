@@ -3,7 +3,4 @@
     <item
         android:id="@+id/info"
         android:title="Más Info" />
-    <item
-        android:id="@+id/ajustes"
-        android:title="Ajustes" />
 </menu>

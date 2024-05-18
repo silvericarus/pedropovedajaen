@@ -2,8 +2,6 @@ package com.silvericarus.parroquiasanpedropovedajaen.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import retrofit2.Call;
@@ -33,17 +31,17 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities;
 import org.jsoup.safety.Whitelist;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import static java.security.AccessController.getContext;
+import java.util.Date;
+import java.util.Locale;
 
 public class NewsActivity extends AppCompatActivity implements Callback<JsonElement> {
     LastNewsAdapter mLNAdapter;
     RecyclerView mNewsRecyclerView;
     public ArrayList<News> mNewsList = new ArrayList<>();
-    private Call<JsonElement> callCategories;
-    private Call<JsonElement> callImage;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
@@ -95,6 +93,21 @@ public class NewsActivity extends AppCompatActivity implements Callback<JsonElem
         return true;
     }
 
+    private static String capitalize(String input) {
+        String[] words = input.split(" ");
+        StringBuilder capitalizedString = new StringBuilder();
+        for (String word : words) {
+            if (word.length() > 1) {
+                capitalizedString.append(Character.toUpperCase(word.charAt(0)))
+                        .append(word.substring(1).toLowerCase());
+            } else {
+                capitalizedString.append(word.toUpperCase());
+            }
+            capitalizedString.append(" ");
+        }
+        return capitalizedString.toString().trim();
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
@@ -104,28 +117,36 @@ public class NewsActivity extends AppCompatActivity implements Callback<JsonElem
             if (pack.has("news")){
                 JsonArray news = pack.getAsJsonArray("news");
                 mLNAdapter.getItemList().clear();
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+                SimpleDateFormat outputFormat = new SimpleDateFormat("EEEE, d 'de' MMMM 'de' yyyy, HH:mm", new Locale("es", "ES"));
                 mLNAdapter.notifyDataSetChanged();
                 for (int i = 0; i < news.size(); i++) {
-                        News news1 = new News();
-                        JsonObject row = news.get(i).getAsJsonObject();
-                        news1.setId(row.get("ID").getAsInt());
-                        news1.setTitle(row.get("post_title").getAsString());
-                        Document.OutputSettings outputSettings = new Document.OutputSettings();
-                        outputSettings.prettyPrint(false);
-                        outputSettings.escapeMode(Entities.EscapeMode.extended);
-                        String html = Jsoup.clean(row.get("post_content").getAsString(),"", Whitelist.none(),outputSettings);
-                        news1.setContent(StringEscapeUtils.unescapeHtml4(html));
-                        String dateAsString = row.get("post_date").getAsString();
-                        dateAsString = dateAsString.replace("-","/");
-                        dateAsString = dateAsString.replace(dateAsString.substring(dateAsString.indexOf(" ")),"");
-                        news1.setFecha(dateAsString);
-                        news1.setUrl(row.get("guid").getAsString());
-                        callCategories = ApiAdapter.getApiService().getCategoriesFromNew(news1.getId());
-                        callImage = ApiAdapter.getApiService().getImageFromNews(news1.getId());
-                        callCategories.enqueue(this);
-                        callImage.enqueue(this);
-                        mLNAdapter.addItemToItemList(news1);
-                        mLNAdapter.notifyDataSetChanged();
+                    News news1 = new News();
+                    JsonObject row = news.get(i).getAsJsonObject();
+                    news1.setId(row.get("ID").getAsInt());
+                    news1.setTitle(row.get("post_title").getAsString());
+                    Document.OutputSettings outputSettings = new Document.OutputSettings();
+                    outputSettings.prettyPrint(false);
+                    outputSettings.escapeMode(Entities.EscapeMode.extended);
+                    String html = Jsoup.clean(row.get("post_content").getAsString(),"", Whitelist.none(),outputSettings);
+                    news1.setContent(StringEscapeUtils.unescapeHtml4(html));
+                    String dateAsString = row.get("post_date").getAsString();
+                    Date tmp = null;
+                    try {
+                        tmp = inputFormat.parse(dateAsString);
+                        String formattedDate = outputFormat.format(tmp);
+                        formattedDate = capitalize(formattedDate);
+                        news1.setFecha(formattedDate);
+                    } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                    }
+                    news1.setUrl(row.get("guid").getAsString());
+                    Call<JsonElement> callCategories = ApiAdapter.getApiService().getCategoriesFromNew(news1.getId());
+                    Call<JsonElement> callImage = ApiAdapter.getApiService().getImageFromNews(news1.getId());
+                    callCategories.enqueue(this);
+                    callImage.enqueue(this);
+                    mLNAdapter.addItemToItemList(news1);
+                    mLNAdapter.notifyDataSetChanged();
                 }
             }else if(pack.has("categories")){
                 int id = pack.get("id").getAsInt();

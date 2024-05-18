@@ -17,5 +17,5 @@
     <string name="title_activity_settings">Configuración</string>
     <!-- Preferencia Tamaño Texto -->
     <string name="pref_numArticulos_titulo">Tamaño de Texto</string>
-    <string name="contacto">Esta aplicación contiene noticias de la página web https://pedropoveda.es , la cual pretende dar información sobre la Parroquia San Pedro Poveda de Jaén. En caso de necesitar contacto, puedes contactarnos en parroquiapedropoveda@gmail.com o 661941531 </string>
+    <string name="contacto">Esta aplicación contiene noticias de la página web https://pedropoveda.es , la cual pretende dar información sobre la Parroquia San Pedro Poveda de Jaén. En caso de necesitar contacto, puedes contactarnos en parroquiapedropoveda@gmail.com o +34661941531.</string>
 </resources>

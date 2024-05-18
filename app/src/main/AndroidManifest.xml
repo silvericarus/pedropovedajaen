@@ -23,12 +23,6 @@
             android:label="@string/title_activity_info"
             android:theme="@style/Theme.ParroquiaSanPedroPovedaJaén.NoActionBar" />
         <activity
-            android:name=".activities.SettingsActivity"
-            android:configChanges="orientation|screenSize"
-            android:exported="true"
-            android:label="@string/title_activity_settings"
-            android:theme="@style/Theme.ParroquiaSanPedroPovedaJaén.NoActionBar" />
-        <activity
             android:name=".activities.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
