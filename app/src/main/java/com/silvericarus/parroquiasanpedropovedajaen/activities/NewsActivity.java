@@ -2,6 +2,7 @@ package com.silvericarus.parroquiasanpedropovedajaen.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import retrofit2.Call;
@@ -14,6 +15,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -22,6 +25,7 @@ import com.silvericarus.parroquiasanpedropovedajaen.R;
 import com.silvericarus.parroquiasanpedropovedajaen.adapters.LastNewsAdapter;
 import com.silvericarus.parroquiasanpedropovedajaen.io.ApiAdapter;
 import com.silvericarus.parroquiasanpedropovedajaen.models.News;
+import com.silvericarus.parroquiasanpedropovedajaen.models.NewsViewModel;
 import com.silvericarus.parroquiasanpedropovedajaen.models.RandomImages;
 import com.silvericarus.parroquiasanpedropovedajaen.tabs.CustomGridLayoutManager;
 
@@ -43,27 +47,54 @@ public class NewsActivity extends AppCompatActivity implements Callback<JsonElem
     RecyclerView mNewsRecyclerView;
     public ArrayList<News> mNewsList = new ArrayList<>();
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ProgressBar progressBar;
+    private NewsViewModel newsViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
+
         Intent intent = getIntent();
         int categoryId = intent.getIntExtra("categoryId",0);
+
         swipeRefreshLayout = findViewById(R.id.swipe_news);
+        progressBar = findViewById(R.id.progressBar);
+        mNewsRecyclerView = findViewById(R.id.lista_noticias);
+
         swipeRefreshLayout.setColorSchemeResources(R.color.blue_lighter);
         swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.blue_dark);
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            Call<JsonElement> call = ApiAdapter.getApiService().getNewsFromCategory(categoryId);
-            call.enqueue(this);
-        });
-        mNewsRecyclerView = findViewById(R.id.lista_noticias);
+
+        swipeRefreshLayout.setOnRefreshListener(() -> newsViewModel.fetchNews());
+
         CustomGridLayoutManager layoutManager = new CustomGridLayoutManager(this);
         layoutManager.setScrollEnabled(true);
         mNewsRecyclerView.setLayoutManager(layoutManager);
         mLNAdapter = new LastNewsAdapter(mNewsList);
         mNewsRecyclerView.setAdapter(mLNAdapter);
+
         setupToolbar();
+
+        newsViewModel = new ViewModelProvider(this).get(NewsViewModel.class);
+        newsViewModel.setCategoryId(categoryId);
+        newsViewModel.setIsLoading(true);
+
+        newsViewModel.getNewsList().observe(this, news -> {
+            mLNAdapter.setItemList((ArrayList<News>) news);
+            mLNAdapter.notifyDataSetChanged();
+        });
+
+        newsViewModel.getIsLoading().observe(this, isLoading -> {
+            if (isLoading) {
+                progressBar.setVisibility(View.VISIBLE);
+                mNewsRecyclerView.setVisibility(View.GONE);
+            } else {
+                progressBar.setVisibility(View.GONE);
+                mNewsRecyclerView.setVisibility(View.VISIBLE);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
         mLNAdapter.setOnClickListener(v ->{
             String url;
             final News newsSelected = mLNAdapter.getItemList().get(mNewsRecyclerView.getChildAdapterPosition(v));
@@ -74,12 +105,8 @@ public class NewsActivity extends AppCompatActivity implements Callback<JsonElem
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(browserIntent);
         });
-        RandomImages randomImages = new RandomImages();
-        News prueba = new News(0,"Prueba","Si estás viendo esta noticia es que ha ocurrido algún error en la descarga de noticias.", randomImages.getImage(), new ArrayList<>(Arrays.asList( "prueba", "error")),"30/12/1996","www.pedropoveda.es",this);
-        mNewsList.add(prueba);
-        mLNAdapter.notifyDataSetChanged();
-        Call<JsonElement> call = ApiAdapter.getApiService().getNewsFromCategory(categoryId);
-        call.enqueue(this);
+
+        newsViewModel.fetchNews();
     }
     private void setupToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -93,62 +120,13 @@ public class NewsActivity extends AppCompatActivity implements Callback<JsonElem
         return true;
     }
 
-    private static String capitalize(String input) {
-        String[] words = input.split(" ");
-        StringBuilder capitalizedString = new StringBuilder();
-        for (String word : words) {
-            if (word.length() > 1) {
-                capitalizedString.append(Character.toUpperCase(word.charAt(0)))
-                        .append(word.substring(1).toLowerCase());
-            } else {
-                capitalizedString.append(word.toUpperCase());
-            }
-            capitalizedString.append(" ");
-        }
-        return capitalizedString.toString().trim();
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
         if (response.isSuccessful()){
             assert response.body() != null;
             JsonObject pack = response.body().getAsJsonObject();
-            if (pack.has("news")){
-                JsonArray news = pack.getAsJsonArray("news");
-                mLNAdapter.getItemList().clear();
-                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-                SimpleDateFormat outputFormat = new SimpleDateFormat("EEEE, d 'de' MMMM 'de' yyyy, HH:mm", new Locale("es", "ES"));
-                mLNAdapter.notifyDataSetChanged();
-                for (int i = 0; i < news.size(); i++) {
-                    News news1 = new News();
-                    JsonObject row = news.get(i).getAsJsonObject();
-                    news1.setId(row.get("ID").getAsInt());
-                    news1.setTitle(row.get("post_title").getAsString());
-                    Document.OutputSettings outputSettings = new Document.OutputSettings();
-                    outputSettings.prettyPrint(false);
-                    outputSettings.escapeMode(Entities.EscapeMode.extended);
-                    String html = Jsoup.clean(row.get("post_content").getAsString(),"", Whitelist.none(),outputSettings);
-                    news1.setContent(StringEscapeUtils.unescapeHtml4(html));
-                    String dateAsString = row.get("post_date").getAsString();
-                    Date tmp = null;
-                    try {
-                        tmp = inputFormat.parse(dateAsString);
-                        String formattedDate = outputFormat.format(tmp);
-                        formattedDate = capitalize(formattedDate);
-                        news1.setFecha(formattedDate);
-                    } catch (ParseException e) {
-                    throw new RuntimeException(e);
-                    }
-                    news1.setUrl(row.get("guid").getAsString());
-                    Call<JsonElement> callCategories = ApiAdapter.getApiService().getCategoriesFromNew(news1.getId());
-                    Call<JsonElement> callImage = ApiAdapter.getApiService().getImageFromNews(news1.getId());
-                    callCategories.enqueue(this);
-                    callImage.enqueue(this);
-                    mLNAdapter.addItemToItemList(news1);
-                    mLNAdapter.notifyDataSetChanged();
-                }
-            }else if(pack.has("categories")){
+            if(pack.has("categories")){
                 int id = pack.get("id").getAsInt();
                 for (News news:mLNAdapter.getItemList()) {
                     if(id==news.getId() && pack.get("categories").toString().length()>=10) {
@@ -169,14 +147,14 @@ public class NewsActivity extends AppCompatActivity implements Callback<JsonElem
                     }
                 }
             }else {
-                int id = pack.get("id").getAsInt();
+                /*int id = pack.get("id").getAsInt();
                 for (News news:mLNAdapter.getItemList()) {
                     if(id==news.getId()){
                         news.setImg(pack.get("image").getAsString());
                         break;
                     }
 
-                }
+                }*/
             }
             mLNAdapter.notifyDataSetChanged();
             swipeRefreshLayout.setRefreshing(false);
