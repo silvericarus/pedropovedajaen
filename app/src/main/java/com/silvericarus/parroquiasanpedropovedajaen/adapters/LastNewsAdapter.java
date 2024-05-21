@@ -78,7 +78,7 @@ public class LastNewsAdapter extends RecyclerView.Adapter<LastNewsAdapter.LastNe
 
     @Override
     public int getItemCount() {
-        return itemList.size();
+        return itemList != null ? itemList.size() : 0;
     }
 
     public void setOnClickListener(View.OnClickListener listener){

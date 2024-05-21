@@ -42,7 +42,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
-public class NewsActivity extends AppCompatActivity implements Callback<JsonElement> {
+public class NewsActivity extends AppCompatActivity{
     LastNewsAdapter mLNAdapter;
     RecyclerView mNewsRecyclerView;
     public ArrayList<News> mNewsList = new ArrayList<>();
@@ -118,53 +118,5 @@ public class NewsActivity extends AppCompatActivity implements Callback<JsonElem
     public boolean onOptionsItemSelected(MenuItem item){
         this.finish();
         return true;
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    @Override
-    public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-        if (response.isSuccessful()){
-            assert response.body() != null;
-            JsonObject pack = response.body().getAsJsonObject();
-            if(pack.has("categories")){
-                int id = pack.get("id").getAsInt();
-                for (News news:mLNAdapter.getItemList()) {
-                    if(id==news.getId() && pack.get("categories").toString().length()>=10) {
-                        if (!pack.get("categories").isJsonArray()){
-                            ArrayList<String> newsCategories = new ArrayList<>();
-                            newsCategories.add(pack.get("categories").getAsString());
-                            news.setCategorias(newsCategories);
-                            break;
-                        }else{
-                            ArrayList<String> newsCategories = new ArrayList<>();
-                            JsonArray categories = pack.get("categories").getAsJsonArray();
-                            for (int i = 0;i<categories.size();i++){
-                                newsCategories.add(categories.get(i).getAsString());
-                            }
-                            news.setCategorias(newsCategories);
-                            break;
-                        }
-                    }
-                }
-            }else {
-                /*int id = pack.get("id").getAsInt();
-                for (News news:mLNAdapter.getItemList()) {
-                    if(id==news.getId()){
-                        news.setImg(pack.get("image").getAsString());
-                        break;
-                    }
-
-                }*/
-            }
-            mLNAdapter.notifyDataSetChanged();
-            swipeRefreshLayout.setRefreshing(false);
-        }else {
-            Log.e("Error", "Respuesta vacia");
-        }
-    }
-
-    @Override
-    public void onFailure(Call<JsonElement> call, Throwable t) {
-        Log.e("ioError",call.toString());
     }
 }

@@ -55,9 +55,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
     }
 
     @Override
-    public int getItemCount() {
-        return itemList.size();
-    }
+    public int getItemCount() {return itemList != null ? itemList.size() : 0;}
 
     public void setOnClickListener(View.OnClickListener listener){
         this.mListener = listener;

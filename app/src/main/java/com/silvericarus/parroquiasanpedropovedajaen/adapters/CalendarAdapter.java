@@ -59,7 +59,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
 
     @Override
     public int getItemCount() {
-        return itemList.size();
+        return itemList != null ? itemList.size() : 0;
     }
 
     public void setOnClickListener(View.OnClickListener listener){

@@ -30,14 +30,17 @@ import retrofit2.Response;
 
 public class NewsViewModel extends ViewModel {
     private MutableLiveData<List<News>> newsList;
+    private MutableLiveData<List<News>> importantNewsList;
+    private MutableLiveData<List<News>> lastNewsList;
     private MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private int categoryId;
-
+    List<News> newsListData;
     public NewsViewModel() {
         newsList = new MutableLiveData<>();
+        importantNewsList = new MutableLiveData<>();
+        lastNewsList = new MutableLiveData<>();
         isLoading.setValue(false);
     }
-
     public LiveData<List<News>> getNewsList() {
         return newsList;
     }
@@ -45,13 +48,18 @@ public class NewsViewModel extends ViewModel {
     public LiveData<Boolean> getIsLoading() {
         return isLoading;
     }
+    public LiveData<List<News>> getImportantNewsList() {
+        return importantNewsList;
+    }
+    public LiveData<List<News>> getLastNewsList() {
+        return lastNewsList;
+    }
     public void setIsLoading(boolean b) {
         isLoading.setValue(b);
     }
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
-
     public void fetchNews() {
         isLoading.setValue(true);
         Call<JsonElement> call = ApiAdapter.getApiService().getNewsFromCategory(categoryId);
@@ -59,7 +67,7 @@ public class NewsViewModel extends ViewModel {
             @Override
             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<News> newsListData = parseNewsResponse(response.body());
+                    newsListData = parseNewsResponse(response.body(), false, true);
                     newsList.setValue(newsListData);
                 }
                 isLoading.setValue(false);
@@ -72,8 +80,47 @@ public class NewsViewModel extends ViewModel {
             }
         });
     }
+    public void fetchMainNews() {
+        isLoading.setValue(true);
 
-    private void fetchAdditionalData(List<News> newsItems) {
+        Call<JsonElement> callLastNews = ApiAdapter.getApiService().getLastNews();
+        Call<JsonElement> callImportantNews = ApiAdapter.getApiService().getImportantNews();
+
+        callLastNews.enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    newsListData = parseNewsResponse(response.body(), false, false);
+                    newsList.setValue(newsListData);
+                } else {
+                    isLoading.setValue(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonElement> call, Throwable t) {
+                isLoading.setValue(false);
+            }
+        });
+
+        callImportantNews.enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    parseNewsResponse(response.body(), true, false);
+                } else {
+                    isLoading.setValue(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonElement> call, Throwable t) {
+                isLoading.setValue(false);
+            }
+        });
+    }
+    private void fetchAdditionalData(List<News> newsItems, boolean isImportant, boolean isCategorized) {
+        //TODO - Check why this isn't working on the last news
         for (News news : newsItems) {
             Call<JsonElement> callCategories = ApiAdapter.getApiService().getCategoriesFromNew(news.getId());
             Call<JsonElement> callImage = ApiAdapter.getApiService().getImageFromNews(news.getId());
@@ -95,7 +142,6 @@ public class NewsViewModel extends ViewModel {
                             }
                             news.setCategorias(categories);
                         }
-                        newsList.setValue(newsItems);
                     }
                 }
 
@@ -116,7 +162,6 @@ public class NewsViewModel extends ViewModel {
                                 break;
                             }
                         }
-                        newsList.setValue(newsItems);
                     }
                 }
 
@@ -124,12 +169,20 @@ public class NewsViewModel extends ViewModel {
                 public void onFailure(Call<JsonElement> call, Throwable t) {
                 }
             });
+            updateNewsList(newsItems, isImportant, isCategorized);
         }
         isLoading.setValue(false);
     }
-
-    private List<News> parseNewsResponse(JsonElement responseBody) {
-        List<News> newsListData = new ArrayList<>();
+    private void updateNewsList(List<News> newsItems, boolean isImportant, boolean isCategorized) {
+        if (isImportant) {
+            importantNewsList.setValue(newsItems);
+        } else if (isCategorized) {
+            newsList.setValue(newsItems);
+        } else {
+            lastNewsList.setValue(newsItems);
+        }
+    }
+    private List<News> parseNewsResponse(JsonElement responseBody, boolean isImportant, boolean isCategorized) {
         JsonObject pack = responseBody.getAsJsonObject();
         if (pack.has("news")) {
             JsonArray news = pack.getAsJsonArray("news");
@@ -155,9 +208,10 @@ public class NewsViewModel extends ViewModel {
                     e.printStackTrace();
                 }
                 newsItem.setUrl(row.get("guid").getAsString());
+                fetchAdditionalData(newsListData, isImportant, isCategorized);
                 newsListData.add(newsItem);
             }
-            fetchAdditionalData(newsListData);
+
         }
         return newsListData;
     }
