@@ -35,11 +35,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -73,18 +75,24 @@ public class TabNews extends Fragment {
 
         newsViewModel = new ViewModelProvider(this).get(NewsViewModel.class);
 
-        newsViewModel.getImportantNewsList().observe(getViewLifecycleOwner(), news -> {
-            mINAdapter.setItemList((ArrayList<News>) news);
-            mINAdapter.notifyDataSetChanged();
+        newsViewModel.getImportantNewsList().observe(getViewLifecycleOwner(), new Observer<List<News>>() {
+            @Override
+            public void onChanged(List<News> news) {
+                mINAdapter.setItemList((ArrayList<News>) news);
+                mINAdapter.notifyDataSetChanged();
+            }
         });
 
-        newsViewModel.getLastNewsList().observe(getViewLifecycleOwner(), news -> {
+        newsViewModel.getLastNewsList().observe(getViewLifecycleOwner(), new Observer<List<News>>() {
+            @Override
+            public void onChanged(List<News> news) {
             mLNAdapter.setItemList((ArrayList<News>) news);
             mLNAdapter.notifyDataSetChanged();
+            }
         });
 
         newsViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
-            if (isLoading) {
+            if (Boolean.TRUE.equals(isLoading)) {
                 mainProgressBar.setVisibility(View.VISIBLE);
                 mLastNewsList.setVisibility(View.GONE);
                 mImportantNewsList.setVisibility(View.GONE);
